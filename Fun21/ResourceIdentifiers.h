@@ -14,7 +14,8 @@ namespace GEX {
 		TitleScreen, 
 		GexScreen,
 		Explosion,Particle,
-		FinishLine
+		FinishLine,
+		Buttons
 	};
 	enum class FontID {
 		Main

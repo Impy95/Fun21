@@ -18,6 +18,84 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="Animation2.cpp" />
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="BloomEffect.cpp" />
+    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandQueue.cpp" />
+    <ClCompile Include="DataTables.cpp" />
+    <ClCompile Include="EmitterNode.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="FontManager.cpp" />
+    <ClCompile Include="Frog.cpp" />
+    <ClCompile Include="GameOverState.cpp" />
+    <ClCompile Include="Gamestate.cpp" />
+    <ClCompile Include="GexState.cpp" />
+    <ClCompile Include="JsonFrameParser.cpp" />
+    <ClCompile Include="MenuState.cpp" />
+    <ClCompile Include="MusicPlayer.cpp" />
+    <ClCompile Include="Obstacle.cpp" />
+    <ClCompile Include="ParticleNode.cpp" />
+    <ClCompile Include="PauseState.cpp" />
+    <ClCompile Include="Pickup.cpp" />
+    <ClCompile Include="PlayerControl.cpp" />
+    <ClCompile Include="PostEffect.cpp" />
+    <ClCompile Include="SceneNode.cpp" />
+    <ClCompile Include="SoundNode.cpp" />
+    <ClCompile Include="SoundPlayer.cpp" />
+    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="SpriteNode.cpp" />
+    <ClCompile Include="State.cpp" />
+    <ClCompile Include="StateStack.cpp" />
+    <ClCompile Include="TextNode.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="TitleState.cpp" />
+    <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="World.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="Animation2.h" />
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="BloomEffect.h" />
+    <ClInclude Include="Category.h" />
+    <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandQueue.h" />
+    <ClInclude Include="DataTables.h" />
+    <ClInclude Include="EmitterNode.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="FontManager.h" />
+    <ClInclude Include="Frog.h" />
+    <ClInclude Include="GameOverState.h" />
+    <ClInclude Include="Gamestate.h" />
+    <ClInclude Include="GexState.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="JsonFrameParser.h" />
+    <ClInclude Include="MenuState.h" />
+    <ClInclude Include="MusicPlayer.h" />
+    <ClInclude Include="Obstacle.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleNode.h" />
+    <ClInclude Include="PauseState.h" />
+    <ClInclude Include="Pickup.h" />
+    <ClInclude Include="PlayerControl.h" />
+    <ClInclude Include="PostEffect.h" />
+    <ClInclude Include="ResourceIdentifiers.h" />
+    <ClInclude Include="SceneNode.h" />
+    <ClInclude Include="SoundNode.h" />
+    <ClInclude Include="SoundPlayer.h" />
+    <ClInclude Include="SpriteNode.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="StateIdentifiers.h" />
+    <ClInclude Include="StateStack.h" />
+    <ClInclude Include="TextNode.h" />
+    <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="TitleState.h" />
+    <ClInclude Include="Utility.h" />
+    <ClInclude Include="World.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{995279fd-a09f-40c0-9313-608f1d943530}</ProjectGuid>

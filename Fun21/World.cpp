@@ -60,8 +60,9 @@ namespace GEX {
 		
 		//prep the view
 		_worldview.setCenter(_worldview.getSize().x / 2.f, _worldBounds.height - _worldview.getSize().y / 2.f);
+		std::cout << "x: " << _worldview.getSize().x << "\ny: " << _worldview.getSize().y;
 		//initalize possible spawn points
-		initializeFinishSpawnPoints();
+		//initializeFinishSpawnPoints();
 
 		//initalize randomizer
 		srand(time(NULL));
@@ -80,52 +81,54 @@ namespace GEX {
 			_sceneGraph.onCommand(_command.pop(), dt);
 		}
 
+		//std::cout << "Test\n";
+
 		//handle special events
-		handleCollisions();
-		_sceneGraph.removeWrecks();
-		killPlayerInRiver();
+		//handleCollisions();
+		//_sceneGraph.removeWrecks();
+		//killPlayerInRiver();
 		_sceneGraph.update(dt,_command);
-		adaptPlayerPosition();
-		updateScore();
+		//adaptPlayerPosition();
+		//updateScore();
 		//handle spawning
-		addObstacles(dt);
-		spawnObstacles();
-		spawnFinishObstacle(dt);
+		//addObstacles(dt);
+		//spawnObstacles();
+		//spawnFinishObstacle(dt);
 		//tests player death
-		if (_player->isDead())
-			_animationPlaying = true;
-		if (!_player->isDead() && _animationPlaying== true) {
-			_animationPlaying = false;
-			resetPlayer();
-		}
+		//if (_player->isDead())
+		//	_animationPlaying = true;
+		//if (!_player->isDead() && _animationPlaying== true) {
+		//	_animationPlaying = false;
+		//	resetPlayer();
+		//}
 
 		//world events
-		destroyEntitesOutOfView();
+		//destroyEntitesOutOfView();
 	}
 
 	//Manages players movement patterns created from world interaction
 	void World::adaptPlayerPosition() {
-		if (_player->isOnPlatform())
-		{
-			updatePlayerOnPlatform();
-			// move with platform
-		}
-		else
-		{
-			_player->setVelocity(0.f, 0.f);
-		}
+		//if (_player->isOnPlatform())
+		//{
+		//	updatePlayerOnPlatform();
+		//	// move with platform
+		//}
+		//else
+		//{
+		//	_player->setVelocity(0.f, 0.f);
+		//}
 
 		//keep player in bounds
 		const float BORDER_DISTANCE_HORIZONTAL = 40.f;
 		const float BORDER_DISTANCE_BOTTOM = 20.f;
 		const float BORDER_DISTANCE_TOP = 100.f;
 		sf::FloatRect viewBounds(_worldview.getCenter() - _worldview.getSize() / 2.f, _worldview.getSize()); //ASK
-		sf::Vector2f position = _player->getPosition();
-		position.x = std::max(position.x, viewBounds.left + BORDER_DISTANCE_HORIZONTAL);
-		position.x = std::min(position.x, viewBounds.left + viewBounds.width - BORDER_DISTANCE_HORIZONTAL);
-		position.y = std::max(position.y, viewBounds.top + BORDER_DISTANCE_TOP);
-		position.y = std::min(position.y, viewBounds.top + viewBounds.height - BORDER_DISTANCE_BOTTOM);
-		_player->setPosition(position);
+		//sf::Vector2f position = _player->getPosition();
+		//position.x = std::max(position.x, viewBounds.left + BORDER_DISTANCE_HORIZONTAL);
+		//position.x = std::min(position.x, viewBounds.left + viewBounds.width - BORDER_DISTANCE_HORIZONTAL);
+		//position.y = std::max(position.y, viewBounds.top + BORDER_DISTANCE_TOP);
+		//position.y = std::min(position.y, viewBounds.top + viewBounds.height - BORDER_DISTANCE_BOTTOM);
+		//_player->setPosition(position);
 	}
 	
 	//render the game
@@ -314,7 +317,8 @@ namespace GEX {
 	//check if player is currently active
 	bool World::hasAlivePlayer() const
 	{
-		return _player->getLives() > 0 || _player->isDead();
+		//return _player->getLives() > 0 || _player->isDead();
+		return true;
 	}
 
 	//unused
@@ -347,21 +351,21 @@ namespace GEX {
 	//update for player movement
 	void World::updateScore()
 	{
-		addScore(_player->getMovementScore());
+		//addScore(_player->getMovementScore());
 		_scoreText->setText("Score:" + std::to_string(_score));
-		_lifeText->setText("Lives:" + std::to_string(_player->getLives()));
+		//_lifeText->setText("Lives:" + std::to_string(_player->getLives()));
 	}
 	//resets player position
 	void World::resetPlayer()
 	{
-		_player->setPosition(_spawnPosition);
+		//_player->setPosition(_spawnPosition);
 	}
 	//kills player if they are within the river area
 	void World::killPlayerInRiver()
 	{
-			if (_riverArea.intersects(_player->getBoundingBox()) && !_player->isOnPlatform()) {
-				_player->die();
-			}
+			//if (_riverArea.intersects(_player->getBoundingBox()) && !_player->isOnPlatform()) {
+			//	_player->die();
+			//}
 
 	}
 
@@ -372,9 +376,9 @@ namespace GEX {
 		command.action = derivedAction<Entity>([this](Entity& e, sf::Time dt)
 		{
 			int i = 1;
-			if (e.getBoundingBox().intersects(_player->getBoundingBox())) {
-				_player->setVelocity(e.getVelocity());
-			}
+			//if (e.getBoundingBox().intersects(_player->getBoundingBox())) {
+			//	_player->setVelocity(e.getVelocity());
+			//}
 			//else if (!e.getBoundingBox().intersects(_player->getBoundingBox()))
 			//{
 			//	_player->setVelocity(0.f, 0.f);
@@ -406,7 +410,8 @@ namespace GEX {
 	//loads textures
 	void World::loadTextures()
 	{
-		_textures.load(GEX::TextureID::Landscape, "Media/Textures/background.png");
+		_textures.load(GEX::TextureID::Landscape, "Media/Textures/Fun21Table.png");
+		_textures.load(GEX::TextureID::Buttons, "Media/Textures/Hit.png");
 		_textures.load(GEX::TextureID::Frog, "Media/Textures/Atlas.png");
 		_textures.load(GEX::TextureID::Entities, "Media/Textures/Atlas.png");
 		_textures.load(GEX::TextureID::LilyPad, "Media/Textures/LilyPad.png");
@@ -426,21 +431,21 @@ namespace GEX {
 			_sceneGraph.attachChild(std::move(layer));
 		}
 		//Connects Score display system
-		std::unique_ptr<TextNode> scoreTxt(new TextNode(""));
-		scoreTxt->setText("Score: " + std::to_string(_score));
-		scoreTxt->setPosition(100, 0);
-		scoreTxt->setSize(50);
-		_scoreText = scoreTxt.get();
-		_sceneLayers[UpperField]->attachChild((std::move(scoreTxt)));
+		//std::unique_ptr<TextNode> scoreTxt(new TextNode(""));
+		//scoreTxt->setText("Score: " + std::to_string(_score));
+		//scoreTxt->setPosition(100, 0);
+		//scoreTxt->setSize(50);
+		//_scoreText = scoreTxt.get();
+		//_sceneLayers[UpperField]->attachChild((std::move(scoreTxt)));
 
-		//Connects life display system
-		std::unique_ptr<TextNode> lifeTxt(new TextNode(""));
-		lifeTxt->setText("Lives: ");
-		lifeTxt->setPosition(300, 0);
-		lifeTxt->setSize(50);
-		_lifeText = lifeTxt.get();
-		_sceneLayers[UpperField]->attachChild((std::move(lifeTxt)));
-		
+		////Connects life display system
+		//std::unique_ptr<TextNode> lifeTxt(new TextNode(""));
+		//lifeTxt->setText("Lives: ");
+		//lifeTxt->setPosition(300, 0);
+		//lifeTxt->setSize(50);
+		//_lifeText = lifeTxt.get();
+		//_sceneLayers[UpperField]->attachChild((std::move(lifeTxt)));
+		//
 		//sets background
 		sf::Texture& texture = _textures.get(TextureID::Landscape);
 		sf::IntRect textureRect(_worldBounds);
@@ -449,14 +454,21 @@ namespace GEX {
 		backgroundSprite->setPosition(_worldBounds.left, _worldBounds.top);
 		_sceneLayers[Background]->attachChild(std::move(backgroundSprite));
 
+		sf::Texture& hitTexture = _textures.get(TextureID::Buttons);
+		sf::IntRect hitRect(_worldBounds);
+		hitTexture.setRepeated(false);
+		std::unique_ptr<SpriteNode> hitButton(new SpriteNode(hitTexture, hitRect));
+		hitButton->setPosition(400, 400);
+		_sceneLayers[Background]->attachChild(std::move(hitButton));
+
 		//add player aircraft & game objects
-		std::unique_ptr<Frog> playerEntity(new Frog(_textures));
-		playerEntity->setPosition(_spawnPosition);
-		_player = playerEntity.get();
-		_sceneLayers[UpperField]->attachChild(std::move(playerEntity));
+		//std::unique_ptr<Frog> playerEntity(new Frog(_textures));
+		//playerEntity->setPosition(_spawnPosition);
+		//_player = playerEntity.get();
+		//_sceneLayers[UpperField]->attachChild(std::move(playerEntity));
 
 		//Obstacles
-		addInitalObstacles();
+		//addInitalObstacles();
 		//addObstacles();
 	}
 	//checks collision categories pairs
@@ -481,12 +493,12 @@ namespace GEX {
 		//build list of colliding pairs of scenenodes
 		std::set<SceneNode::Pair> collisionPairs;
 		_sceneGraph.checkSceneCollision(_sceneGraph, collisionPairs);
-		_player->setIsOnPlatform(false);
+		//_player->setIsOnPlatform(false);
 		for (SceneNode::Pair pair : collisionPairs) {
-			if (matchesCategories(pair, Category::Type::Frog, Category::Type::KillObstacle)) {
-				if(_player->getLives() > 0)
-					_player->die();
-			}
+			//if (matchesCategories(pair, Category::Type::Frog, Category::Type::KillObstacle)) {
+			//	if(_player->getLives() > 0)
+			//		_player->die();
+			//}
 			if (matchesCategories(pair, Category::Type::Frog, Category::Type::Finish)) {
 				auto& finish = static_cast<Obstacle&>(*(pair.second));
 				if (!finish.hasFinishFrog() && !finish.hasCroc()) {
@@ -502,18 +514,18 @@ namespace GEX {
 					}
 					resetPlayer();
 				}
-				else {
-					if (_player->getLives() > 0)
-						_player->die();
-				}
+				//else {
+				//	if (_player->getLives() > 0)
+				//		_player->die();
+				//}
 			}
 			if (matchesCategories(pair, Category::Type::Frog, Category::Type::PlatformObstacle))
 			{
 				auto& platform = static_cast<Obstacle&>(*(pair.second));
-				if(platform.isActive())
-					_player->setIsOnPlatform(true);
-				else
-					_player->setIsOnPlatform(false);
+				//if(platform.isActive())
+				//	_player->setIsOnPlatform(true);
+				//else
+				//	_player->setIsOnPlatform(false);
 			}
 			if (matchesCategories(pair, Category::Type::Frog, Category::Type::BonusObstacle)) {
 				auto& bonus = static_cast<Obstacle&>(*(pair.second));

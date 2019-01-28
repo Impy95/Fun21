@@ -90,7 +90,7 @@ namespace GEX {
 		sf::FloatRect					_worldBounds;
 		sf::Vector2f					_spawnPosition;
 		float							_scrollSpeeds;
-		Frog*							_player;
+		//Frog*							_player;
 		int								_score;
 		sf::FloatRect					_riverArea;
 
