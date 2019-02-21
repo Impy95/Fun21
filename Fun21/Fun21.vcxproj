@@ -23,6 +23,7 @@
     <ClCompile Include="Animation2.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="BloomEffect.cpp" />
+    <ClCompile Include="Card.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandQueue.cpp" />
     <ClCompile Include="DataTables.cpp" />
@@ -33,7 +34,6 @@
     <ClCompile Include="GameOverState.cpp" />
     <ClCompile Include="Gamestate.cpp" />
     <ClCompile Include="GexState.cpp" />
-    <ClCompile Include="HitButton.cpp" />
     <ClCompile Include="JsonFrameParser.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="MusicPlayer.cpp" />
@@ -61,6 +61,7 @@
     <ClInclude Include="Animation2.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="BloomEffect.h" />
+    <ClInclude Include="Card.h" />
     <ClInclude Include="Category.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="CommandQueue.h" />
@@ -72,7 +73,6 @@
     <ClInclude Include="GameOverState.h" />
     <ClInclude Include="Gamestate.h" />
     <ClInclude Include="GexState.h" />
-    <ClInclude Include="HitButton.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JsonFrameParser.h" />
     <ClInclude Include="MenuState.h" />

@@ -7,8 +7,7 @@
 #include"Frog.h"
 #include "Pickup.h"
 #include "ParticleNode.h"
-#include "Application.h"
-#include "HitButton.h"
+#include "Card.h"
 #include <SFML\Graphics\RenderTarget.hpp>
 #include "SoundNode.h"
 #include <iostream>
@@ -186,7 +185,7 @@ namespace GEX {
 	void World::loadTextures()
 	{
 		_textures.load(GEX::TextureID::Landscape, "Media/Textures/fun21newtable.png");
-		_textures.load(GEX::TextureID::Deck_of_Cards, "Media/Textures/deck_of_cards.png");
+		_textures.load(GEX::TextureID::Cards, "Media/Textures/blankcards_noking.png");
 		_textures.load(GEX::TextureID::HitButton, "Media/Textures/Hit.png");
 		_textures.load(GEX::TextureID::StayButton, "Media/Textures/Stay.png");
 		_textures.load(GEX::TextureID::DoubleButton, "Media/Textures/Double.png");
@@ -248,6 +247,9 @@ namespace GEX {
 		//_hitButtonSprite = hitButtonSprite->getSprite();
 		//_sceneLayers[Background]->attachChild(std::move(hitButtonSprite));
 		
+		std::unique_ptr<Card> cardTest(new Card(_textures, Card::CardType::Ace, Card::Suit::Club));
+		cardTest->setPosition(300, 500);
+		_sceneLayers[Background]->attachChild(std::move(cardTest));
 
 		sf::Texture& hitTexture = _textures.get(TextureID::HitButton);
 		sf::IntRect hitRect(_worldBounds);

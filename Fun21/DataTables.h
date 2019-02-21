@@ -50,7 +50,7 @@ namespace GEX {
 		sf::Time		lifetime;
 	};
 
-	struct HitButtonData {
+	struct CardData {
 		TextureID		texture;
 		sf::IntRect		textureRect;
 	};
@@ -61,7 +61,8 @@ namespace GEX {
 	std::map<Particle::Type, ParticleData>	initalizeParticleData();
 	//std::map<AircraftType, AircraftData> initalizeAircraftData();
 	FrogData								intitalizeFrogData();
-	HitButtonData							initializeHitButtonData();
+	CardData								initializeCardData();
+
 	
 
 }
