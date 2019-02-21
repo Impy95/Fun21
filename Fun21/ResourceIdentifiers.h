@@ -15,7 +15,11 @@ namespace GEX {
 		GexScreen,
 		Explosion,Particle,
 		FinishLine,
-		Buttons
+		HitButton,
+		StayButton,
+		DoubleButton,
+		SplitButton,
+		Deck_of_Cards
 	};
 	enum class FontID {
 		Main

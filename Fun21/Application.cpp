@@ -10,7 +10,7 @@
 const sf::Time Application::TimePerFrame = sf::seconds(1.0f / 60.0f);
 
 Application::Application()
-	:_window(sf::VideoMode(1020,600),"Fun 21",sf::Style::Close),
+	:_window(sf::VideoMode(1024,689),"Fun 21",sf::Style::Close),
 	_player(),
 	_font(),
 	_textures(),
@@ -32,6 +32,8 @@ Application::Application()
 
 	registerStates();
 	_stateStack.pushState(GEX::StateID::Title);
+	_stateStack.applyPendingChanges();
+	
 }
 
 void Application::run()
@@ -74,7 +76,8 @@ void Application::update(sf::Time deltaTime)
 
 void Application::render()
 {
-	_window.clear();
+	//sf::Color backgroundColour = sf::Color(139, 0, 0, 0);
+	_window.clear(sf::Color(139, 0, 0, 0));
 	_stateStack.draw();
 	_window.setView(_window.getDefaultView());
 	_window.display();
@@ -88,3 +91,4 @@ void Application::registerStates()
 	_stateStack.registerState<GexState>(GEX::StateID::Gex);
 	_stateStack.registerState<GameOverState>(GEX::StateID::GameOver);
 }
+

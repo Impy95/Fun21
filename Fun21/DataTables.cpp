@@ -196,6 +196,15 @@ GEX::FrogData GEX::intitalizeFrogData()
 	return frogData;
 }
 
+GEX::HitButtonData GEX::initializeHitButtonData()
+{
+	GEX::HitButtonData hitButtonData;
+	hitButtonData.texture = TextureID::HitButton;
+	hitButtonData.textureRect = sf::IntRect(69, 1, 36, 34);
+
+	return hitButtonData;
+}
+
 //std::map<GEX::AircraftType, GEX::AircraftData> GEX::initalizeAircraftData()
 //{
 //

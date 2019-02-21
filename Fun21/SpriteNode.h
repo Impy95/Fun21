@@ -13,6 +13,9 @@ namespace GEX {
 		explicit			SpriteNode(const sf::Texture& texture);
 							SpriteNode(const sf::Texture& texture, const sf::IntRect& textureRect);
 							~SpriteNode();
+		sf::Sprite			getSprite();
+		sf::FloatRect		getSpriteGlobalBounds();
+		sf::FloatRect		getBoundingBox() const override;
 	private:
 		virtual void drawcurrent(sf::RenderTarget& target, sf::RenderStates states) const override;
 	private:

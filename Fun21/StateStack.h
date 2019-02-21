@@ -30,9 +30,10 @@ namespace GEX {
 		void					popState();
 		void					clearStates();
 		bool					isEmpty() const;
+		void					applyPendingChanges();
 	private:
 		State::Ptr				createState(GEX::StateID stateID);
-		void					applyPendingChanges();
+		
 	private:
 		struct PendingChange {
 			explicit PendingChange(Action action, StateID stateID = GEX::StateID::None);

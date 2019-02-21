@@ -29,29 +29,17 @@ namespace GEX {
 	class World
 	{
 	public:
-		World(sf::RenderTarget& outputTarget,SoundPlayer& sounds);
+		World(sf::RenderWindow& outputWindow, sf::RenderTarget& outputTarget,SoundPlayer& sounds);
 		~World();
 		void							update(sf::Time dt);
 		void adaptPlayerPosition();
 		void							draw();
 		CommandQueue&					getCommandQueue();
 
-		void							addObstacles(sf::Time dt);
-		void							addObstacle(ObstacleType type, float relx, float rely);
-		void							spawnObstacles();
-		void							addInitalObstacles();
 		sf::FloatRect					getViewBounds() const;
-		sf::FloatRect					getSpawnerBounds() const;
-		bool							hasAlivePlayer() const;
-		bool							hasPlayerReachedEnd() const;
 		void							destroyEntitesOutOfView();
 		void							addScore(int score);
 		void							updateScore();
-		void							resetPlayer();
-		void							killPlayerInRiver();
-		void							updatePlayerOnPlatform();
-		void							increaseLevel();
-		void							initializeFinishSpawnPoints();
 	private:
 		enum Layer {
 			Background = 0,
@@ -72,8 +60,9 @@ namespace GEX {
 		void							loadTextures();
 		void							buildScene();
 		void							handleCollisions();
-		void							spawnFinishObstacle(sf::Time dt);
+		bool							isHitButtonClicked();
 	private:
+		sf::RenderWindow&				_window;
 		BloomEffect						_bloomEffect;
 		sf::RenderTarget&				_target;
 		sf::RenderTexture				_sceneTexture;
@@ -83,6 +72,11 @@ namespace GEX {
 		TextNode*						_scoreText;
 		TextNode*						_lifeText;
 
+		sf::FloatRect					_hitButtonBoundingBox;
+		sf::FloatRect					_stayButtonBoundingBox;
+		sf::FloatRect					_doubleButtonBoundingBox;
+		sf::FloatRect					_splitButtonBoundingBox;
+		bool							_isMouseButtonDown;
 
 		SceneNode						_sceneGraph;
 		std::vector<SceneNode*>			_sceneLayers;

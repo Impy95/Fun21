@@ -20,6 +20,7 @@ namespace Category {
 		Boss = 1 << 8,
 		SoundEffect = 1 << 9,
 		BonusObstacle = 1 << 10,
+		Button = 1 << 11,
 
 		Obstacle = KillObstacle || PlatformObstacle
 

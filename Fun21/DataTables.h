@@ -49,12 +49,19 @@ namespace GEX {
 		sf::Color		color;
 		sf::Time		lifetime;
 	};
+
+	struct HitButtonData {
+		TextureID		texture;
+		sf::IntRect		textureRect;
+	};
+
 	std::map<Pickup::Type, PickupData>		initalizePickupData();
 
 	std::map<ObstacleType, ObstacleData>	initalizeObstacleData();
 	std::map<Particle::Type, ParticleData>	initalizeParticleData();
 	//std::map<AircraftType, AircraftData> initalizeAircraftData();
 	FrogData								intitalizeFrogData();
+	HitButtonData							initializeHitButtonData();
 	
 
 }

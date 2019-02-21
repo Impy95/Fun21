@@ -30,6 +30,7 @@ private:
 	void update(sf::Time deltaTime);
 	void render();
 	void registerStates();
+	
 private:
 	static const sf::Time	TimePerFrame;
 	sf::RenderWindow _window;
