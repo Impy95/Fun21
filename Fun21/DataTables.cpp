@@ -196,60 +196,181 @@ GEX::FrogData GEX::intitalizeFrogData()
 	return frogData;
 }
 
-GEX::CardData GEX::initializeCardData()
+std::map<GEX::CardType, GEX::CardData> GEX::initializeCardData()
 {
-	GEX::CardData data;
-	data.texture = TextureID::Cards;
-	data.textureRect = sf::IntRect(0, 192, 192, 192);
+	std::map<GEX::CardType, GEX::CardData> data;
+
+	//const auto cardTypeSize = int(CardType::COUNT_AT_END);
+	//std::vector<CardType> cardTypes;
+	//for (int i = 0; i < cardTypeSize; i++)
+	//{
+	//	cardTypes.push_back(CardType(i));
+	//}
+
+	//for (int i = 0; i < cardTypes.size(); i++)
+	//{
+	//	data[cardTypes[i]].texture = TextureID::Cards;
+	//	data[cardTypes[i]].textureRect = sf::IntRect(0, 0, 301, 469);
+	//}
+
+	// Aces
+	data[CardType::AceClub].texture = TextureID::Cards;
+	data[CardType::AceClub].textureRect = sf::IntRect(0, 0, 301, 469);
+
+	data[CardType::AceDiamond].texture = TextureID::Cards;
+	data[CardType::AceDiamond].textureRect = sf::IntRect(0, 469, 301, 469);
+
+	data[CardType::AceHeart].texture = TextureID::Cards;
+	data[CardType::AceHeart].textureRect = sf::IntRect(0, 938, 301, 469);
+
+	data[CardType::AceSpade].texture = TextureID::Cards;
+	data[CardType::AceSpade].textureRect = sf::IntRect(0, 1407, 301, 469);
+
+	// Twos
+	data[CardType::TwoClub].texture = TextureID::Cards;
+	data[CardType::TwoClub].textureRect = sf::IntRect(301, 0, 301, 469);
+
+	data[CardType::TwoDiamond].texture = TextureID::Cards;
+	data[CardType::TwoDiamond].textureRect = sf::IntRect(301, 469, 301, 469);
+
+	data[CardType::TwoHeart].texture = TextureID::Cards;
+	data[CardType::TwoHeart].textureRect = sf::IntRect(301, 938, 301, 469);
+
+	data[CardType::TwoSpade].texture = TextureID::Cards;
+	data[CardType::TwoSpade].textureRect = sf::IntRect(301, 1407, 301, 469);
+
+	// Threes
+	data[CardType::ThreeClub].texture = TextureID::Cards;
+	data[CardType::ThreeClub].textureRect = sf::IntRect(602, 0, 301, 469);
+
+	data[CardType::ThreeDiamond].texture = TextureID::Cards;
+	data[CardType::ThreeDiamond].textureRect = sf::IntRect(602, 469, 301, 469);
+
+	data[CardType::ThreeHeart].texture = TextureID::Cards;
+	data[CardType::ThreeHeart].textureRect = sf::IntRect(602, 938, 301, 469);
+
+	data[CardType::ThreeSpade].texture = TextureID::Cards;
+	data[CardType::ThreeSpade].textureRect = sf::IntRect(602, 1407, 301, 469);
+
+	// Fours
+	data[CardType::FourClub].texture = TextureID::Cards;
+	data[CardType::FourClub].textureRect = sf::IntRect(903, 0, 301, 469);
+
+	data[CardType::FourDiamond].texture = TextureID::Cards;
+	data[CardType::FourDiamond].textureRect = sf::IntRect(903, 469, 301, 469);
+
+	data[CardType::FourHeart].texture = TextureID::Cards;
+	data[CardType::FourHeart].textureRect = sf::IntRect(903, 938, 301, 469);
+
+	data[CardType::FourSpade].texture = TextureID::Cards;
+	data[CardType::FourSpade].textureRect = sf::IntRect(903, 1407, 301, 469);
+
+	// Fives
+	data[CardType::FiveClub].texture = TextureID::Cards;
+	data[CardType::FiveClub].textureRect = sf::IntRect(1204, 0, 301, 469);
+
+	data[CardType::FiveDiamond].texture = TextureID::Cards;
+	data[CardType::FiveDiamond].textureRect = sf::IntRect(1204, 469, 301, 469);
+
+	data[CardType::FiveHeart].texture = TextureID::Cards;
+	data[CardType::FiveHeart].textureRect = sf::IntRect(1204, 938, 301, 469);
+
+	data[CardType::FiveSpade].texture = TextureID::Cards;
+	data[CardType::FiveSpade].textureRect = sf::IntRect(1204, 1407, 301, 469);
+
+	// Sixes
+	data[CardType::SixClub].texture = TextureID::Cards;
+	data[CardType::SixClub].textureRect = sf::IntRect(1505, 0, 301, 469);
+
+	data[CardType::SixDiamond].texture = TextureID::Cards;
+	data[CardType::SixDiamond].textureRect = sf::IntRect(1505, 469, 301, 469);
+
+	data[CardType::SixHeart].texture = TextureID::Cards;
+	data[CardType::SixHeart].textureRect = sf::IntRect(1505, 938, 301, 469);
+
+	data[CardType::SixSpade].texture = TextureID::Cards;
+	data[CardType::SixSpade].textureRect = sf::IntRect(1505, 1407, 301, 469);
+
+	// Sevens
+	data[CardType::SevenClub].texture = TextureID::Cards;
+	data[CardType::SevenClub].textureRect = sf::IntRect(1806, 0, 301, 469);
+
+	data[CardType::SevenDiamond].texture = TextureID::Cards;
+	data[CardType::SevenDiamond].textureRect = sf::IntRect(1806, 469, 301, 469);
+
+	data[CardType::SevenHeart].texture = TextureID::Cards;
+	data[CardType::SevenHeart].textureRect = sf::IntRect(1806, 938, 301, 469);
+
+	data[CardType::SevenSpade].texture = TextureID::Cards;
+	data[CardType::SevenSpade].textureRect = sf::IntRect(1806, 1407, 301, 469);
+
+	// Eights
+	data[CardType::EightClub].texture = TextureID::Cards;
+	data[CardType::EightClub].textureRect = sf::IntRect(2107, 0, 301, 469);
+
+	data[CardType::EightDiamond].texture = TextureID::Cards;
+	data[CardType::EightDiamond].textureRect = sf::IntRect(2107, 469, 301, 469);
+
+	data[CardType::EightHeart].texture = TextureID::Cards;
+	data[CardType::EightHeart].textureRect = sf::IntRect(2107, 938, 301, 469);
+
+	data[CardType::EightSpade].texture = TextureID::Cards;
+	data[CardType::EightSpade].textureRect = sf::IntRect(2107, 1407, 301, 469);
+
+	// Nines
+	data[CardType::NineClub].texture = TextureID::Cards;
+	data[CardType::NineClub].textureRect = sf::IntRect(2408, 0, 301, 469);
+
+	data[CardType::NineDiamond].texture = TextureID::Cards;
+	data[CardType::NineDiamond].textureRect = sf::IntRect(2408, 469, 301, 469);
+
+	data[CardType::NineHeart].texture = TextureID::Cards;
+	data[CardType::NineHeart].textureRect = sf::IntRect(2408, 938, 301, 469);
+
+	data[CardType::NineSpade].texture = TextureID::Cards;
+	data[CardType::NineSpade].textureRect = sf::IntRect(2408, 1407, 301, 469);
+
+	// Tens
+	data[CardType::TenClub].texture = TextureID::Cards;
+	data[CardType::TenClub].textureRect = sf::IntRect(2709, 0, 301, 469);
+
+	data[CardType::TenDiamond].texture = TextureID::Cards;
+	data[CardType::TenDiamond].textureRect = sf::IntRect(2709, 469, 301, 469);
+
+	data[CardType::TenHeart].texture = TextureID::Cards;
+	data[CardType::TenHeart].textureRect = sf::IntRect(2709, 938, 301, 469);
+
+	data[CardType::TenSpade].texture = TextureID::Cards;
+	data[CardType::TenSpade].textureRect = sf::IntRect(2709, 1407, 301, 469);
+
+	// Jacks
+	data[CardType::JackClub].texture = TextureID::Cards;
+	data[CardType::JackClub].textureRect = sf::IntRect(3010, 0, 301, 469);
+
+	data[CardType::JackDiamond].texture = TextureID::Cards;
+	data[CardType::JackDiamond].textureRect = sf::IntRect(3010, 469, 301, 469);
+
+	data[CardType::JackHeart].texture = TextureID::Cards;
+	data[CardType::JackHeart].textureRect = sf::IntRect(3010, 938, 301, 469);
+
+	data[CardType::JackSpade].texture = TextureID::Cards;
+	data[CardType::JackSpade].textureRect = sf::IntRect(3010, 1407, 301, 469);
+
+	// Queens
+	data[CardType::QueenClub].texture = TextureID::Cards;
+	data[CardType::QueenClub].textureRect = sf::IntRect(3311, 0, 301, 469);
+
+	data[CardType::QueenDiamond].texture = TextureID::Cards;
+	data[CardType::QueenDiamond].textureRect = sf::IntRect(3311, 469, 301, 469);
+
+	data[CardType::QueenHeart].texture = TextureID::Cards;
+	data[CardType::QueenHeart].textureRect = sf::IntRect(3311, 938, 301, 469);
+
+	data[CardType::QueenSpade].texture = TextureID::Cards;
+	data[CardType::QueenSpade].textureRect = sf::IntRect(3311, 1407, 301, 469);
 
 	return data;
 }
 
 
-//std::map<GEX::AircraftType, GEX::AircraftData> GEX::initalizeAircraftData()
-//{
-//
-//	ask for values
-//	std::map<GEX::AircraftType, GEX::AircraftData> data;
-//	data[AircraftType::Eagle].hitpoints = 100;
-//	data[AircraftType::Eagle].speed = 1200.f;
-//	data[AircraftType::Eagle].texture = TextureID::Entities;
-//	data[AircraftType::Eagle].textureRect = sf::IntRect(0, 0, 48, 64);
-//	data[AircraftType::Eagle].fireInterval = sf::seconds(0.5);
-//	data[AircraftType::Eagle].hasRollAnimation = true;
-//
-//	data[AircraftType::Raptor].hitpoints = 20;
-//	data[AircraftType::Raptor].speed = 200.f;
-//	data[AircraftType::Raptor].texture = TextureID::Entities;
-//	data[AircraftType::Raptor].textureRect = sf::IntRect(144, 0, 84, 64);
-//	data[AircraftType::Raptor].directions.emplace_back(Direction(40.f, 100.f));
-//	data[AircraftType::Raptor].directions.emplace_back(Direction(-80.f, 100.f));
-//	data[AircraftType::Raptor].directions.emplace_back(Direction(40.f, 100.f));
-//	data[AircraftType::Raptor].fireInterval = sf::Time::Zero;
-//	data[AircraftType::Raptor].hasRollAnimation = false;
-//
-//
-//	data[AircraftType::Avenger].hitpoints = 40;
-//	data[AircraftType::Avenger].speed = 200.f;
-//	data[AircraftType::Avenger].texture = TextureID::Entities;
-//	data[AircraftType::Avenger].textureRect = sf::IntRect(228, 0, 60, 59);
-//	data[AircraftType::Avenger].directions.emplace_back(Direction(45.f, 50.f));
-//	data[AircraftType::Avenger].directions.emplace_back(Direction(0.f, 50.f));
-//	data[AircraftType::Avenger].directions.emplace_back(Direction(-45.f, 100.f));
-//	data[AircraftType::Avenger].directions.emplace_back(Direction(0.f, 50.f));
-//	data[AircraftType::Avenger].directions.emplace_back(Direction(45.f, 50.f));
-//	data[AircraftType::Avenger].fireInterval = sf::seconds(2);
-//	data[AircraftType::Avenger].hasRollAnimation = false;
-//
-//	data[AircraftType::Boss].hitpoints = 1200;
-//	data[AircraftType::Boss].speed = 10.f;
-//	data[AircraftType::Boss].texture = TextureID::Boss;
-//	data[AircraftType::Boss].directions.emplace_back(Direction(45.f, 50.f));
-//	data[AircraftType::Boss].directions.emplace_back(Direction(0.f, 50.f));
-//	data[AircraftType::Boss].directions.emplace_back(Direction(-45.f, 100.f));
-//	data[AircraftType::Boss].directions.emplace_back(Direction(0.f, 50.f));
-//	data[AircraftType::Boss].directions.emplace_back(Direction(45.f, 50.f));
-//	data[AircraftType::Boss].fireInterval = sf::seconds(2);
-//
-//	return data;
-//}
+

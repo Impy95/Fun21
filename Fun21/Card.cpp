@@ -4,14 +4,14 @@
 namespace GEX
 {
 	namespace {
-		const CardData TABLE = initializeCardData();
+		const std::map<CardType, CardData> TABLE = initializeCardData();
 	}
 
-	Card::Card(const TextureManager & textures, CardType cardType, Suit suit)
+	Card::Card(const TextureManager & textures, Face face, Suit suit, CardType type)
 		: Entity()
-		, _sprite(textures.get(TABLE.texture), TABLE.textureRect)
+		, _sprite(textures.get(TABLE.at(type).texture), TABLE.at(type).textureRect)
 		, _cardValue(0)
-		, _cardType(cardType)
+		, _face(face)
 		, _suit(suit)
 	{
 	}

@@ -247,8 +247,9 @@ namespace GEX {
 		//_hitButtonSprite = hitButtonSprite->getSprite();
 		//_sceneLayers[Background]->attachChild(std::move(hitButtonSprite));
 		
-		std::unique_ptr<Card> cardTest(new Card(_textures, Card::CardType::Ace, Card::Suit::Club));
+		std::unique_ptr<Card> cardTest(new Card(_textures, Card::Face::Ace, Card::Suit::Club, CardType::JackHeart));
 		cardTest->setPosition(300, 500);
+		cardTest->setScale(0.3, 0.3);
 		_sceneLayers[Background]->attachChild(std::move(cardTest));
 
 		sf::Texture& hitTexture = _textures.get(TextureID::HitButton);

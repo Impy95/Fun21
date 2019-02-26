@@ -10,10 +10,26 @@
 #include <functional>
 namespace GEX
 {
+	enum class CardType
+	{
+		AceSpade, AceHeart, AceClub, AceDiamond,
+		TwoSpade, TwoHeart, TwoClub, TwoDiamond,
+		ThreeSpade, ThreeHeart, ThreeClub, ThreeDiamond,
+		FourSpade, FourHeart, FourClub, FourDiamond,
+		FiveSpade, FiveHeart, FiveClub, FiveDiamond,
+		SixSpade, SixHeart, SixClub, SixDiamond,
+		SevenSpade, SevenHeart, SevenClub, SevenDiamond,
+		EightSpade, EightHeart, EightClub, EightDiamond,
+		NineSpade, NineHeart, NineClub, NineDiamond,
+		TenSpade, TenHeart, TenClub, TenDiamond,
+		JackSpade, JackHeart, JackClub, JackDiamond,
+		QueenSpade, QueenHeart, QueenClub, QueenDiamond,
+		COUNT_AT_END
+	};
 	class Card : public Entity
 	{
 	public:
-		enum class CardType
+		enum class Face
 		{
 			Ace,
 			Two,
@@ -36,7 +52,7 @@ namespace GEX
 			Heart,
 			Club
 		};
-									Card(const TextureManager& textures, CardType cardType, Suit suit);
+									Card(const TextureManager& textures, Face face, Suit suit, CardType type);
 		virtual void				drawcurrent(sf::RenderTarget& target, sf::RenderStates states) const override;
 		unsigned int				getCategory() const override;
 		sf::FloatRect				getBoundingBox() const override;
@@ -54,7 +70,7 @@ namespace GEX
 		sf::Sprite					_sprite;
 		bool						_isMarkedForRemoval;
 		int							_cardValue;
-		CardType					_cardType;
+		Face						_face;
 		Suit						_suit;
 	};
 }

@@ -1,0 +1,45 @@
+{"frames": [
+
+    {
+        "filename": "aceSpade.png",
+        "frame": { "x": 0,"y": 0,"w": 301,"h": 469 },
+        "rotated": false,
+        "trimmed": true,
+        "spriteSourceSize": { "x": 0,"y": 0,"w": 301,"h": 469 },
+        "sourceSize": {"w": 301,"h": 469}
+    },
+    {
+        "filename": "aceDiamond.png",
+        "frame": { "x": 0, "y": 469, "w": 301, "h": 469},
+        "rotated": false,
+        "trimmed": true,
+        "spriteSourceSize": { "x": 0,"y": 0,"w": 301,"h": 469 },
+        "sourceSize": {"w": 301,"h": 469}
+    },
+    {
+        "filename": "aceHeart.png",
+        "frame": { "x": 0, "y": 938, "w": 301, "h": 469},
+        "rotated": false,
+        "trimmed": true,
+        "spriteSourceSize": { "x": 0,"y": 0,"w": 301,"h": 469 },
+        "sourceSize": {"w": 301,"h": 469}
+    },
+    {
+        "filename": "aceClub.png",
+        "frame": { "x": 0, "y": 1407, "w": 301, "h": 469},
+        "rotated": false,
+        "trimmed": true,
+        "spriteSourceSize": { "x": 0,"y": 0,"w": 301,"h": 469 },
+        "sourceSize": {"w": 301,"h": 469}
+    }
+],
+"meta": {
+    "app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "blankcards_noking.png",
+	"format": "RGBA8888",
+	"size": {"w":275,"h":275},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:b72c46b37847ffac8dd7088b8de136a2:15b71623bc6f98bc3ccb2c9b504b952e:ece2dd005824f07bc50b57ffe85f2ef5$"
+}
+}
