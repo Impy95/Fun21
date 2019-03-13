@@ -11,6 +11,7 @@
 #include "SpriteNode.h"
 #include "TextureManager.h"
 #include "Frog.h"
+#include "Deck.h"
 #include "CommandQueue.h"
 #include <vector>
 #include "PostEffect.h"
@@ -77,6 +78,8 @@ namespace GEX {
 		sf::FloatRect					_doubleButtonBoundingBox;
 		sf::FloatRect					_splitButtonBoundingBox;
 		bool							_isMouseButtonDown;
+
+		Deck*							_deck;
 
 		SceneNode						_sceneGraph;
 		std::vector<SceneNode*>			_sceneLayers;

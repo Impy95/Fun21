@@ -12,7 +12,7 @@ namespace GEX
 {
 	enum class CardType
 	{
-		AceSpade, AceHeart, AceClub, AceDiamond,
+		AceSpade = 0, AceHeart, AceClub, AceDiamond,
 		TwoSpade, TwoHeart, TwoClub, TwoDiamond,
 		ThreeSpade, ThreeHeart, ThreeClub, ThreeDiamond,
 		FourSpade, FourHeart, FourClub, FourDiamond,
@@ -23,8 +23,7 @@ namespace GEX
 		NineSpade, NineHeart, NineClub, NineDiamond,
 		TenSpade, TenHeart, TenClub, TenDiamond,
 		JackSpade, JackHeart, JackClub, JackDiamond,
-		QueenSpade, QueenHeart, QueenClub, QueenDiamond,
-		COUNT_AT_END
+		QueenSpade, QueenHeart, QueenClub, QueenDiamond, END
 	};
 	class Card : public Entity
 	{
@@ -60,6 +59,8 @@ namespace GEX
 
 		bool						isMarkedForRemoval() const override;
 		int							getCardValue();
+		Face						getFace() { return _face; }
+		Suit						getSuit() { return _suit; }
 	protected:
 		void						updateCurrent(sf::Time dt, CommandQueue& commands) override;
 	private:
@@ -72,6 +73,7 @@ namespace GEX
 		int							_cardValue;
 		Face						_face;
 		Suit						_suit;
+		CardType					_cardType;
 	};
 }
 

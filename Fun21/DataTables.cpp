@@ -216,158 +216,254 @@ std::map<GEX::CardType, GEX::CardData> GEX::initializeCardData()
 	// Aces
 	data[CardType::AceClub].texture = TextureID::Cards;
 	data[CardType::AceClub].textureRect = sf::IntRect(0, 0, 301, 469);
+	data[CardType::AceClub].face = Card::Face::Ace;
+	data[CardType::AceClub].suit = Card::Suit::Club;
 
 	data[CardType::AceDiamond].texture = TextureID::Cards;
 	data[CardType::AceDiamond].textureRect = sf::IntRect(0, 469, 301, 469);
+	data[CardType::AceDiamond].face = Card::Face::Ace;
+	data[CardType::AceDiamond].suit = Card::Suit::Diamond;
 
 	data[CardType::AceHeart].texture = TextureID::Cards;
 	data[CardType::AceHeart].textureRect = sf::IntRect(0, 938, 301, 469);
+	data[CardType::AceHeart].face = Card::Face::Ace;
+	data[CardType::AceHeart].suit = Card::Suit::Heart;
 
 	data[CardType::AceSpade].texture = TextureID::Cards;
 	data[CardType::AceSpade].textureRect = sf::IntRect(0, 1407, 301, 469);
+	data[CardType::AceSpade].face = Card::Face::Ace;
+	data[CardType::AceSpade].suit = Card::Suit::Spade;
 
 	// Twos
 	data[CardType::TwoClub].texture = TextureID::Cards;
 	data[CardType::TwoClub].textureRect = sf::IntRect(301, 0, 301, 469);
+	data[CardType::TwoClub].face = Card::Face::Two;
+	data[CardType::TwoClub].suit = Card::Suit::Club;
 
 	data[CardType::TwoDiamond].texture = TextureID::Cards;
 	data[CardType::TwoDiamond].textureRect = sf::IntRect(301, 469, 301, 469);
+	data[CardType::TwoDiamond].face = Card::Face::Two;
+	data[CardType::TwoDiamond].suit = Card::Suit::Diamond;
 
 	data[CardType::TwoHeart].texture = TextureID::Cards;
 	data[CardType::TwoHeart].textureRect = sf::IntRect(301, 938, 301, 469);
+	data[CardType::TwoHeart].face = Card::Face::Two;
+	data[CardType::TwoHeart].suit = Card::Suit::Heart;
 
 	data[CardType::TwoSpade].texture = TextureID::Cards;
 	data[CardType::TwoSpade].textureRect = sf::IntRect(301, 1407, 301, 469);
+	data[CardType::TwoSpade].face = Card::Face::Two;
+	data[CardType::TwoSpade].suit = Card::Suit::Spade;
 
 	// Threes
 	data[CardType::ThreeClub].texture = TextureID::Cards;
 	data[CardType::ThreeClub].textureRect = sf::IntRect(602, 0, 301, 469);
+	data[CardType::ThreeClub].face = Card::Face::Three;
+	data[CardType::ThreeClub].suit = Card::Suit::Club;
 
 	data[CardType::ThreeDiamond].texture = TextureID::Cards;
 	data[CardType::ThreeDiamond].textureRect = sf::IntRect(602, 469, 301, 469);
+	data[CardType::ThreeDiamond].face = Card::Face::Three;
+	data[CardType::ThreeDiamond].suit = Card::Suit::Diamond;
 
 	data[CardType::ThreeHeart].texture = TextureID::Cards;
 	data[CardType::ThreeHeart].textureRect = sf::IntRect(602, 938, 301, 469);
+	data[CardType::ThreeHeart].face = Card::Face::Three;
+	data[CardType::ThreeHeart].suit = Card::Suit::Heart;
 
 	data[CardType::ThreeSpade].texture = TextureID::Cards;
 	data[CardType::ThreeSpade].textureRect = sf::IntRect(602, 1407, 301, 469);
+	data[CardType::ThreeSpade].face = Card::Face::Three;
+	data[CardType::ThreeSpade].suit = Card::Suit::Spade;
 
 	// Fours
 	data[CardType::FourClub].texture = TextureID::Cards;
 	data[CardType::FourClub].textureRect = sf::IntRect(903, 0, 301, 469);
+	data[CardType::FourClub].face = Card::Face::Four;
+	data[CardType::FourClub].suit = Card::Suit::Club;
 
 	data[CardType::FourDiamond].texture = TextureID::Cards;
 	data[CardType::FourDiamond].textureRect = sf::IntRect(903, 469, 301, 469);
+	data[CardType::FourDiamond].face = Card::Face::Four;
+	data[CardType::FourDiamond].suit = Card::Suit::Diamond;
 
 	data[CardType::FourHeart].texture = TextureID::Cards;
 	data[CardType::FourHeart].textureRect = sf::IntRect(903, 938, 301, 469);
+	data[CardType::FourHeart].face = Card::Face::Four;
+	data[CardType::FourHeart].suit = Card::Suit::Heart;
 
 	data[CardType::FourSpade].texture = TextureID::Cards;
 	data[CardType::FourSpade].textureRect = sf::IntRect(903, 1407, 301, 469);
+	data[CardType::FourSpade].face = Card::Face::Four;
+	data[CardType::FourSpade].suit = Card::Suit::Spade;
 
 	// Fives
 	data[CardType::FiveClub].texture = TextureID::Cards;
 	data[CardType::FiveClub].textureRect = sf::IntRect(1204, 0, 301, 469);
+	data[CardType::FiveClub].face = Card::Face::Five;
+	data[CardType::FiveClub].suit = Card::Suit::Club;
 
 	data[CardType::FiveDiamond].texture = TextureID::Cards;
 	data[CardType::FiveDiamond].textureRect = sf::IntRect(1204, 469, 301, 469);
+	data[CardType::FiveDiamond].face = Card::Face::Five;
+	data[CardType::FiveDiamond].suit = Card::Suit::Diamond;
 
 	data[CardType::FiveHeart].texture = TextureID::Cards;
 	data[CardType::FiveHeart].textureRect = sf::IntRect(1204, 938, 301, 469);
+	data[CardType::FiveHeart].face = Card::Face::Five;
+	data[CardType::FiveHeart].suit = Card::Suit::Heart;
 
 	data[CardType::FiveSpade].texture = TextureID::Cards;
 	data[CardType::FiveSpade].textureRect = sf::IntRect(1204, 1407, 301, 469);
+	data[CardType::FiveSpade].face = Card::Face::Five;
+	data[CardType::FiveSpade].suit = Card::Suit::Spade;
 
 	// Sixes
 	data[CardType::SixClub].texture = TextureID::Cards;
 	data[CardType::SixClub].textureRect = sf::IntRect(1505, 0, 301, 469);
+	data[CardType::SixClub].face = Card::Face::Six;
+	data[CardType::SixClub].suit = Card::Suit::Club;
 
 	data[CardType::SixDiamond].texture = TextureID::Cards;
 	data[CardType::SixDiamond].textureRect = sf::IntRect(1505, 469, 301, 469);
+	data[CardType::SixDiamond].face = Card::Face::Six;
+	data[CardType::SixDiamond].suit = Card::Suit::Diamond;
 
 	data[CardType::SixHeart].texture = TextureID::Cards;
 	data[CardType::SixHeart].textureRect = sf::IntRect(1505, 938, 301, 469);
+	data[CardType::SixHeart].face = Card::Face::Six;
+	data[CardType::SixHeart].suit = Card::Suit::Heart;
 
 	data[CardType::SixSpade].texture = TextureID::Cards;
 	data[CardType::SixSpade].textureRect = sf::IntRect(1505, 1407, 301, 469);
+	data[CardType::SixSpade].face = Card::Face::Six;
+	data[CardType::SixSpade].suit = Card::Suit::Spade;
 
 	// Sevens
 	data[CardType::SevenClub].texture = TextureID::Cards;
 	data[CardType::SevenClub].textureRect = sf::IntRect(1806, 0, 301, 469);
+	data[CardType::SevenClub].face = Card::Face::Seven;
+	data[CardType::SevenClub].suit = Card::Suit::Club;
 
 	data[CardType::SevenDiamond].texture = TextureID::Cards;
 	data[CardType::SevenDiamond].textureRect = sf::IntRect(1806, 469, 301, 469);
+	data[CardType::SevenDiamond].face = Card::Face::Seven;
+	data[CardType::SevenDiamond].suit = Card::Suit::Diamond;
 
 	data[CardType::SevenHeart].texture = TextureID::Cards;
 	data[CardType::SevenHeart].textureRect = sf::IntRect(1806, 938, 301, 469);
+	data[CardType::SevenHeart].face = Card::Face::Seven;
+	data[CardType::SevenHeart].suit = Card::Suit::Heart;
 
 	data[CardType::SevenSpade].texture = TextureID::Cards;
 	data[CardType::SevenSpade].textureRect = sf::IntRect(1806, 1407, 301, 469);
+	data[CardType::SevenSpade].face = Card::Face::Seven;
+	data[CardType::SevenSpade].suit = Card::Suit::Spade;
 
 	// Eights
 	data[CardType::EightClub].texture = TextureID::Cards;
 	data[CardType::EightClub].textureRect = sf::IntRect(2107, 0, 301, 469);
+	data[CardType::EightClub].face = Card::Face::Eight;
+	data[CardType::EightClub].suit = Card::Suit::Club;
 
 	data[CardType::EightDiamond].texture = TextureID::Cards;
 	data[CardType::EightDiamond].textureRect = sf::IntRect(2107, 469, 301, 469);
+	data[CardType::EightDiamond].face = Card::Face::Eight;
+	data[CardType::EightDiamond].suit = Card::Suit::Diamond;
 
 	data[CardType::EightHeart].texture = TextureID::Cards;
 	data[CardType::EightHeart].textureRect = sf::IntRect(2107, 938, 301, 469);
+	data[CardType::EightHeart].face = Card::Face::Eight;
+	data[CardType::EightHeart].suit = Card::Suit::Heart;
 
 	data[CardType::EightSpade].texture = TextureID::Cards;
 	data[CardType::EightSpade].textureRect = sf::IntRect(2107, 1407, 301, 469);
+	data[CardType::EightSpade].face = Card::Face::Eight;
+	data[CardType::EightSpade].suit = Card::Suit::Spade;
 
 	// Nines
 	data[CardType::NineClub].texture = TextureID::Cards;
 	data[CardType::NineClub].textureRect = sf::IntRect(2408, 0, 301, 469);
+	data[CardType::NineClub].face = Card::Face::Nine;
+	data[CardType::NineClub].suit = Card::Suit::Club;
 
 	data[CardType::NineDiamond].texture = TextureID::Cards;
 	data[CardType::NineDiamond].textureRect = sf::IntRect(2408, 469, 301, 469);
+	data[CardType::NineDiamond].face = Card::Face::Nine;
+	data[CardType::NineDiamond].suit = Card::Suit::Diamond;
 
 	data[CardType::NineHeart].texture = TextureID::Cards;
 	data[CardType::NineHeart].textureRect = sf::IntRect(2408, 938, 301, 469);
+	data[CardType::NineHeart].face = Card::Face::Nine;
+	data[CardType::NineHeart].suit = Card::Suit::Heart;
 
 	data[CardType::NineSpade].texture = TextureID::Cards;
 	data[CardType::NineSpade].textureRect = sf::IntRect(2408, 1407, 301, 469);
+	data[CardType::NineSpade].face = Card::Face::Nine;
+	data[CardType::NineSpade].suit = Card::Suit::Spade;
 
 	// Tens
 	data[CardType::TenClub].texture = TextureID::Cards;
 	data[CardType::TenClub].textureRect = sf::IntRect(2709, 0, 301, 469);
+	data[CardType::TenClub].face = Card::Face::Ten;
+	data[CardType::TenClub].suit = Card::Suit::Club;
 
 	data[CardType::TenDiamond].texture = TextureID::Cards;
 	data[CardType::TenDiamond].textureRect = sf::IntRect(2709, 469, 301, 469);
+	data[CardType::TenDiamond].face = Card::Face::Ten;
+	data[CardType::TenDiamond].suit = Card::Suit::Diamond;
 
 	data[CardType::TenHeart].texture = TextureID::Cards;
 	data[CardType::TenHeart].textureRect = sf::IntRect(2709, 938, 301, 469);
+	data[CardType::TenHeart].face = Card::Face::Ten;
+	data[CardType::TenHeart].suit = Card::Suit::Heart;
 
 	data[CardType::TenSpade].texture = TextureID::Cards;
 	data[CardType::TenSpade].textureRect = sf::IntRect(2709, 1407, 301, 469);
+	data[CardType::TenSpade].face = Card::Face::Ten;
+	data[CardType::TenSpade].suit = Card::Suit::Spade;
 
 	// Jacks
 	data[CardType::JackClub].texture = TextureID::Cards;
 	data[CardType::JackClub].textureRect = sf::IntRect(3010, 0, 301, 469);
+	data[CardType::JackClub].face = Card::Face::Jack;
+	data[CardType::JackClub].suit = Card::Suit::Club;
 
 	data[CardType::JackDiamond].texture = TextureID::Cards;
 	data[CardType::JackDiamond].textureRect = sf::IntRect(3010, 469, 301, 469);
+	data[CardType::JackDiamond].face = Card::Face::Jack;
+	data[CardType::JackDiamond].suit = Card::Suit::Diamond;
 
 	data[CardType::JackHeart].texture = TextureID::Cards;
 	data[CardType::JackHeart].textureRect = sf::IntRect(3010, 938, 301, 469);
+	data[CardType::JackHeart].face = Card::Face::Jack;
+	data[CardType::JackHeart].suit = Card::Suit::Heart;
 
 	data[CardType::JackSpade].texture = TextureID::Cards;
 	data[CardType::JackSpade].textureRect = sf::IntRect(3010, 1407, 301, 469);
+	data[CardType::JackSpade].face = Card::Face::Jack;
+	data[CardType::JackSpade].suit = Card::Suit::Spade;
 
 	// Queens
 	data[CardType::QueenClub].texture = TextureID::Cards;
 	data[CardType::QueenClub].textureRect = sf::IntRect(3311, 0, 301, 469);
+	data[CardType::QueenClub].face = Card::Face::Queen;
+	data[CardType::QueenClub].suit = Card::Suit::Club;
 
 	data[CardType::QueenDiamond].texture = TextureID::Cards;
 	data[CardType::QueenDiamond].textureRect = sf::IntRect(3311, 469, 301, 469);
+	data[CardType::QueenDiamond].face = Card::Face::Queen;
+	data[CardType::QueenDiamond].suit = Card::Suit::Diamond;
 
 	data[CardType::QueenHeart].texture = TextureID::Cards;
 	data[CardType::QueenHeart].textureRect = sf::IntRect(3311, 938, 301, 469);
+	data[CardType::QueenHeart].face = Card::Face::Queen;
+	data[CardType::QueenHeart].suit = Card::Suit::Heart;
 
 	data[CardType::QueenSpade].texture = TextureID::Cards;
 	data[CardType::QueenSpade].textureRect = sf::IntRect(3311, 1407, 301, 469);
+	data[CardType::QueenSpade].face = Card::Face::Queen;
+	data[CardType::QueenSpade].suit = Card::Suit::Spade;
 
 	return data;
 }

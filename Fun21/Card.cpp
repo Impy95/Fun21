@@ -13,6 +13,7 @@ namespace GEX
 		, _cardValue(0)
 		, _face(face)
 		, _suit(suit)
+		, _cardType(type)
 	{
 	}
 
@@ -42,7 +43,33 @@ namespace GEX
 
 	int Card::getCardValue()
 	{
-		return 0;
+		switch (_face)
+		{
+		case Face::Two:
+			return 2;
+		case Face::Three:
+			return 3;
+		case Face::Four:
+			return 4;
+		case Face::Five:
+			return 5;
+		case Face::Six:
+			return 6;
+		case Face::Seven:
+			return 7;
+		case Face::Eight:
+			return 8;
+		case Face::Nine:
+			return 9;
+		case Face::Ten:
+		case Face::Jack:
+		case Face::Queen:
+			return 10;
+		case Face::Ace:
+			return 11;
+		default:
+			return 0; // shouldn't get here
+		}
 	}
 
 	void Card::updateCurrent(sf::Time dt, CommandQueue & commands)

@@ -4,7 +4,8 @@
 *@description: A controller to handle collisions and events
 */
 #include "World.h"
-#include"Frog.h"
+#include "Frog.h"
+#include "Deck.h"
 #include "Pickup.h"
 #include "ParticleNode.h"
 #include "Card.h"
@@ -278,6 +279,8 @@ namespace GEX {
 		doubleButton->scale(0.5, 0.5);
 		_doubleButtonBoundingBox = doubleButton->getBoundingBox();
 		_sceneLayers[Background]->attachChild(std::move(doubleButton));
+
+		std::unique_ptr<Deck> deck(new Deck(_textures));
 
 		sf::Texture& splitTexture = _textures.get(TextureID::SplitButton);
 		sf::IntRect splitRect(_worldBounds);
