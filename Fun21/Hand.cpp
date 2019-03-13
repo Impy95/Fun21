@@ -6,23 +6,23 @@ namespace GEX
 	{
 	}
 
-	void Hand::addCard(Card card)
+	void Hand::addCard(Card& card)
 	{
-		_hand.push_back(card);
-		cards.insert(card);
+		_hand.push_back(&card);
+		cards.insert(&card);
 	}
 
 	void Hand::removeCard(int n)
 	{
-		auto card = &_hand[n];
-		auto it = find_if(_hand.begin(),
-			_hand.end(),
-			[=](auto c)
-		{
-			return c == card;
-		});
-		_hand.erase(it);
-		cards.erase(*card);
+		//auto card = &_hand[n];
+		//auto it = find_if(_hand.begin(),
+		//	_hand.end(),
+		//	[=](auto c)
+		//{
+		//	return c == card;
+		//});
+		//_hand.erase(it);
+		//cards.erase(*card);
 	}
 
 	void Hand::clear()
@@ -37,9 +37,9 @@ namespace GEX
 		bool handContainsAce = false;
 		for (auto& card : _hand)
 		{
-			total += card.getCardValue();
+			total += card->getCardValue();
 			if (!handContainsAce)
-				handContainsAce = card.getFace() == Card::Face::Ace ? true : false;
+				handContainsAce = card->getFace() == Card::Face::Ace ? true : false;
 		}
 
 		// if hand total > 21 and hand contain ace
@@ -49,10 +49,10 @@ namespace GEX
 			total = 0;
 			for (auto& card : _hand)
 			{
-				if (card.getFace() == Card::Face::Ace)
+				if (card->getFace() == Card::Face::Ace)
 					total += 1;
 				else
-					total += card.getCardValue();
+					total += card->getCardValue();
 			}
 		}
 

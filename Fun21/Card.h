@@ -61,6 +61,7 @@ namespace GEX
 		int							getCardValue();
 		Face						getFace() { return _face; }
 		Suit						getSuit() { return _suit; }
+		CardType					getType() { return _cardType; }
 	protected:
 		void						updateCurrent(sf::Time dt, CommandQueue& commands) override;
 	private:

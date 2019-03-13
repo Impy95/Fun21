@@ -6,6 +6,7 @@
 #include "World.h"
 #include "Frog.h"
 #include "Deck.h"
+#include "Hand.h"
 #include "Pickup.h"
 #include "ParticleNode.h"
 #include "Card.h"
@@ -45,7 +46,8 @@ namespace GEX {
 		_levelCounter(1),
 		_lilypadCounter(0),
 		_currentFinishSpawnTimer(sf::Time::Zero),
-		_hasFinishObstacle(false)
+		_hasFinishObstacle(false),
+		_hand()
 	{
 		// initialize clock and time vectors
 		const auto obstacleTypeEnumSize = int (ObstacleType::COUNT_AT_END);
@@ -66,6 +68,8 @@ namespace GEX {
 
 		//initalize randomizer
 		srand(time(NULL));
+
+		_deck = new Deck(_textures);
 
 	}
 
@@ -94,6 +98,7 @@ namespace GEX {
 				if (_hitButtonBoundingBox.contains(mouse))
 				{
 					std::cout << "Hit Button Pressed\n";
+					deal();
 				}
 				else if (_stayButtonBoundingBox.contains(mouse))
 				{
@@ -182,6 +187,22 @@ namespace GEX {
 		//_lifeText->setText("Lives:" + std::to_string(_player->getLives()));
 	}
 
+	void World::deal()
+	{
+		_deck->shuffle();
+		Card& card = _deck->drawCard();
+		_hand->addCard(card);
+		drawCard(card);
+	}
+
+	void World::drawCard(Card& card)
+	{
+		std::unique_ptr<Card> cardTest(new Card(_textures, card.getFace(), card.getSuit(), card.getType()));
+		cardTest->setPosition(300, 500);
+		cardTest->setScale(0.3, 0.3);
+		_sceneLayers[Background]->attachChild(std::move(cardTest));
+	}
+
 	//loads textures
 	void World::loadTextures()
 	{
@@ -247,11 +268,6 @@ namespace GEX {
 		//hitButtonSprite->scale(0.5, 0.5);
 		//_hitButtonSprite = hitButtonSprite->getSprite();
 		//_sceneLayers[Background]->attachChild(std::move(hitButtonSprite));
-		
-		std::unique_ptr<Card> cardTest(new Card(_textures, Card::Face::Ace, Card::Suit::Club, CardType::JackHeart));
-		cardTest->setPosition(300, 500);
-		cardTest->setScale(0.3, 0.3);
-		_sceneLayers[Background]->attachChild(std::move(cardTest));
 
 		sf::Texture& hitTexture = _textures.get(TextureID::HitButton);
 		sf::IntRect hitRect(_worldBounds);

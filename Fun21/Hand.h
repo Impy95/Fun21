@@ -9,16 +9,16 @@ namespace GEX
 	public:
 		Hand();
 		
-		void		addCard(Card card);
+		void		addCard(Card& card);
 		void		removeCard(int n);
 		int			handSize() { return _hand.size(); }
 		void		clear();
-		Card&		getCard(int index) { return _hand[index]; }
+		Card&		getCard(int index) { return *_hand[index]; }
 		int			getHandTotal();
 
 	private:
-		std::vector<Card> _hand;
-		std::set<Card> cards;
+		std::vector<Card*> _hand;
+		std::set<Card*> cards;
 		std::vector<bool> _drawCard;
 	};
 }

@@ -12,6 +12,7 @@
 #include "TextureManager.h"
 #include "Frog.h"
 #include "Deck.h"
+#include "Hand.h"
 #include "CommandQueue.h"
 #include <vector>
 #include "PostEffect.h"
@@ -41,6 +42,8 @@ namespace GEX {
 		void							destroyEntitesOutOfView();
 		void							addScore(int score);
 		void							updateScore();
+		void							deal();
+		void							drawCard(Card& card);
 	private:
 		enum Layer {
 			Background = 0,
@@ -80,6 +83,7 @@ namespace GEX {
 		bool							_isMouseButtonDown;
 
 		Deck*							_deck;
+		Hand*							_hand;
 
 		SceneNode						_sceneGraph;
 		std::vector<SceneNode*>			_sceneLayers;
