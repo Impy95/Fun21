@@ -2,27 +2,31 @@
 
 namespace GEX
 {
-	Hand::Hand()
+	Hand::Hand() 
+		: Entity()
+		, _hand()
+		, cards()
 	{
 	}
 
 	void Hand::addCard(Card& card)
 	{
+		std::vector<Card*> testHand;
 		_hand.push_back(&card);
 		cards.insert(&card);
 	}
 
 	void Hand::removeCard(int n)
 	{
-		//auto card = &_hand[n];
-		//auto it = find_if(_hand.begin(),
-		//	_hand.end(),
-		//	[=](auto c)
-		//{
-		//	return c == card;
-		//});
-		//_hand.erase(it);
-		//cards.erase(*card);
+		auto card = &_hand[n];
+		auto it = find_if(_hand.begin(),
+			_hand.end(),
+			[=](auto c)
+		{
+			return c == *card;
+		});
+		_hand.erase(it);
+		cards.erase(*card);
 	}
 
 	void Hand::clear()
