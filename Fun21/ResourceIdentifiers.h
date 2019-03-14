@@ -19,7 +19,7 @@ namespace GEX {
 		StayButton,
 		DoubleButton,
 		SplitButton,
-		Deck_of_Cards
+		Cards
 	};
 	enum class FontID {
 		Main

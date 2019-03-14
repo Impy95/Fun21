@@ -11,6 +11,8 @@
 #include "SpriteNode.h"
 #include "TextureManager.h"
 #include "Frog.h"
+#include "Deck.h"
+#include "Hand.h"
 #include "CommandQueue.h"
 #include <vector>
 #include "PostEffect.h"
@@ -39,7 +41,9 @@ namespace GEX {
 		sf::FloatRect					getViewBounds() const;
 		void							destroyEntitesOutOfView();
 		void							addScore(int score);
-		void							updateScore();
+		void							updateHandTotal();
+		void							deal();
+		void							drawCard(Card& card);
 	private:
 		enum Layer {
 			Background = 0,
@@ -77,6 +81,10 @@ namespace GEX {
 		sf::FloatRect					_doubleButtonBoundingBox;
 		sf::FloatRect					_splitButtonBoundingBox;
 		bool							_isMouseButtonDown;
+
+		Deck*							_deck;
+		Hand*							_hand;
+		TextNode*						_handTotal;
 
 		SceneNode						_sceneGraph;
 		std::vector<SceneNode*>			_sceneLayers;

@@ -9,8 +9,10 @@
 #include "Pickup.h"
 #include "Particle.h"
 #include "Animation2.h"
+#include "Card.h"
 #include <map>
 #include "Obstacle.h"
+#include <tuple>
 
 namespace GEX {
 	struct Direction {
@@ -50,18 +52,19 @@ namespace GEX {
 		sf::Time		lifetime;
 	};
 
-	struct HitButtonData {
+	struct CardData {
 		TextureID		texture;
 		sf::IntRect		textureRect;
+		Card::Suit		suit;
+		Card::Face		face;
 	};
 
-	std::map<Pickup::Type, PickupData>		initalizePickupData();
+	std::map<Pickup::Type, PickupData>							initalizePickupData();
+	std::map<ObstacleType, ObstacleData>						initalizeObstacleData();
+	std::map<Particle::Type, ParticleData>						initalizeParticleData();
+	FrogData													intitalizeFrogData();
+	std::map<CardType, CardData>								initializeCardData();
 
-	std::map<ObstacleType, ObstacleData>	initalizeObstacleData();
-	std::map<Particle::Type, ParticleData>	initalizeParticleData();
-	//std::map<AircraftType, AircraftData> initalizeAircraftData();
-	FrogData								intitalizeFrogData();
-	HitButtonData							initializeHitButtonData();
 	
 
 }

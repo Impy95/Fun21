@@ -4,11 +4,12 @@
 *@description: A controller to handle collisions and events
 */
 #include "World.h"
-#include"Frog.h"
+#include "Frog.h"
+#include "Deck.h"
+#include "Hand.h"
 #include "Pickup.h"
 #include "ParticleNode.h"
-#include "Application.h"
-#include "HitButton.h"
+#include "Card.h"
 #include <SFML\Graphics\RenderTarget.hpp>
 #include "SoundNode.h"
 #include <iostream>
@@ -45,7 +46,9 @@ namespace GEX {
 		_levelCounter(1),
 		_lilypadCounter(0),
 		_currentFinishSpawnTimer(sf::Time::Zero),
-		_hasFinishObstacle(false)
+		_hasFinishObstacle(false),
+		_hand(new Hand()),
+		_handTotal()
 	{
 		// initialize clock and time vectors
 		const auto obstacleTypeEnumSize = int (ObstacleType::COUNT_AT_END);
@@ -66,6 +69,9 @@ namespace GEX {
 
 		//initalize randomizer
 		srand(time(NULL));
+
+		_deck = new Deck(_textures);
+		//_hand = new Hand();
 
 	}
 
@@ -94,6 +100,7 @@ namespace GEX {
 				if (_hitButtonBoundingBox.contains(mouse))
 				{
 					std::cout << "Hit Button Pressed\n";
+					deal();
 				}
 				else if (_stayButtonBoundingBox.contains(mouse))
 				{
@@ -122,6 +129,8 @@ namespace GEX {
 		{
 			_isMouseButtonDown = false;
 		}
+
+		updateHandTotal();
 	}
 
 	//Manages players movement patterns created from world interaction
@@ -175,18 +184,43 @@ namespace GEX {
 		_score += score;
 	}
 	//update for player movement
-	void World::updateScore()
+	void World::updateHandTotal()
 	{
-		//addScore(_player->getMovementScore());
-		_scoreText->setText("Score:" + std::to_string(_score));
-		//_lifeText->setText("Lives:" + std::to_string(_player->getLives()));
+		if (_hand->getHandTotal() > 21)
+			_handTotal->setText("BUSTED!!!");
+		else
+			_handTotal->setText("Hand Total: " + std::to_string(_hand->getHandTotal()));
+	}
+
+	void World::deal()
+	{
+		if (_hand->getHandTotal() <= 21)
+		{
+			_deck->shuffle();
+			Card& card = _deck->drawCard();
+			//Card* aceTest = new Card(_textures, Card::Face::Ace, Card::Suit::Club, CardType::AceClub);
+			//_hand->addCard(*aceTest);
+			_hand->addCard(card);
+			drawCard(card);
+		}
+	}
+
+	void World::drawCard(Card& card)
+	{
+		// Testing Aces
+		//std::unique_ptr<Card> cardDraw(new Card(_textures, Card::Face::Ace, Card::Suit::Club, CardType::AceClub));
+
+		std::unique_ptr<Card> cardDraw(new Card(_textures, card.getFace(), card.getSuit(), card.getType()));
+		cardDraw->setPosition(100 + (_hand->handSize() * 100), 500);
+		cardDraw->setScale(0.3, 0.3);
+		_sceneLayers[Background]->attachChild(std::move(cardDraw));	
 	}
 
 	//loads textures
 	void World::loadTextures()
 	{
 		_textures.load(GEX::TextureID::Landscape, "Media/Textures/fun21newtable.png");
-		_textures.load(GEX::TextureID::Deck_of_Cards, "Media/Textures/deck_of_cards.png");
+		_textures.load(GEX::TextureID::Cards, "Media/Textures/blankcards_noking.png");
 		_textures.load(GEX::TextureID::HitButton, "Media/Textures/Hit.png");
 		_textures.load(GEX::TextureID::StayButton, "Media/Textures/Stay.png");
 		_textures.load(GEX::TextureID::DoubleButton, "Media/Textures/Double.png");
@@ -200,8 +234,6 @@ namespace GEX {
 	//inital construction of the world
 	void World::buildScene()
 	{
-
-		
 		//initalizes layers
 		for (int i = 0; i < LayerCount; ++i) {
 			auto category = (i == UpperField) ? Category::Type::AirSceneLayer : Category::Type::None;
@@ -209,13 +241,13 @@ namespace GEX {
 			_sceneLayers.push_back(layer.get());
 			_sceneGraph.attachChild(std::move(layer));
 		}
-		//Connects Score display system
-		//std::unique_ptr<TextNode> scoreTxt(new TextNode(""));
-		//scoreTxt->setText("Score: " + std::to_string(_score));
-		//scoreTxt->setPosition(100, 0);
-		//scoreTxt->setSize(50);
-		//_scoreText = scoreTxt.get();
-		//_sceneLayers[UpperField]->attachChild((std::move(scoreTxt)));
+		//Connects Hand Total display system
+		std::unique_ptr<TextNode> handTotalTxt(new TextNode(""));
+		handTotalTxt->setText("Score: " + std::to_string(_score));
+		handTotalTxt->setPosition(100, 0);
+		handTotalTxt->setSize(50);
+		_handTotal = handTotalTxt.get();
+		_sceneLayers[UpperField]->attachChild((std::move(handTotalTxt)));
 
 		////Connects life display system
 		//std::unique_ptr<TextNode> lifeTxt(new TextNode(""));
@@ -247,7 +279,6 @@ namespace GEX {
 		//hitButtonSprite->scale(0.5, 0.5);
 		//_hitButtonSprite = hitButtonSprite->getSprite();
 		//_sceneLayers[Background]->attachChild(std::move(hitButtonSprite));
-		
 
 		sf::Texture& hitTexture = _textures.get(TextureID::HitButton);
 		sf::IntRect hitRect(_worldBounds);
@@ -276,10 +307,12 @@ namespace GEX {
 		_doubleButtonBoundingBox = doubleButton->getBoundingBox();
 		_sceneLayers[Background]->attachChild(std::move(doubleButton));
 
+		std::unique_ptr<Deck> deck(new Deck(_textures));
+
 		sf::Texture& splitTexture = _textures.get(TextureID::SplitButton);
 		sf::IntRect splitRect(_worldBounds);
 		splitTexture.setRepeated(false);
-		std::unique_ptr<SpriteNode> splitButton(new SpriteNode(stayTexture, stayRect));
+		std::unique_ptr<SpriteNode> splitButton(new SpriteNode(splitTexture, splitRect));
 		splitButton->setPosition(810, 600);
 		splitButton->scale(0.5, 0.5);
 		_splitButtonBoundingBox = splitButton->getBoundingBox();
