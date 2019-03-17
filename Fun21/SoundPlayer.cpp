@@ -26,7 +26,7 @@ GEX::SoundPlayer::SoundPlayer()
 
 void GEX::SoundPlayer::play(SoundEffectID effect)
 {
-	play(effect, getListenerPosition());
+	//play(effect, getListenerPosition());
 
 }
 

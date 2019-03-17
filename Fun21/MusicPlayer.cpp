@@ -11,11 +11,11 @@ GEX::MusicPlayer::MusicPlayer()
 
 void GEX::MusicPlayer::play(MusicID theme)
 {
-	if (!_music.openFromFile(_filenames[theme]))
+	/*if (!_music.openFromFile(_filenames[theme]))
 		throw std::runtime_error("Music could not open file");
 	_music.setVolume(_volume);
 	_music.setLoop(true);
-	_music.play();
+	_music.play();*/
 }
 
 void GEX::MusicPlayer::stop()

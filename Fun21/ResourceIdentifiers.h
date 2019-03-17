@@ -19,7 +19,11 @@ namespace GEX {
 		StayButton,
 		DoubleButton,
 		SplitButton,
-		Cards
+		Cards,
+		Bet5Button,
+		Bet25Button,
+		BetMaxButton,
+		DealButton
 	};
 	enum class FontID {
 		Main

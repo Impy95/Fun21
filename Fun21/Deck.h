@@ -16,6 +16,7 @@ namespace GEX
 		bool		isEmpty() const;
 		Card&		drawCard();
 		void		shuffle();
+		int			getDeckSize();
 
 	private:
 		std::vector<Card*>		_deck;

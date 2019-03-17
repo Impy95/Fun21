@@ -43,6 +43,7 @@
     <ClCompile Include="ParticleNode.cpp" />
     <ClCompile Include="PauseState.cpp" />
     <ClCompile Include="Pickup.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerControl.cpp" />
     <ClCompile Include="PostEffect.cpp" />
     <ClCompile Include="SceneNode.cpp" />
@@ -86,6 +87,7 @@
     <ClInclude Include="ParticleNode.h" />
     <ClInclude Include="PauseState.h" />
     <ClInclude Include="Pickup.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerControl.h" />
     <ClInclude Include="PostEffect.h" />
     <ClInclude Include="ResourceIdentifiers.h" />

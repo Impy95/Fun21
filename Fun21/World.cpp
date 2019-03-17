@@ -48,7 +48,9 @@ namespace GEX {
 		_currentFinishSpawnTimer(sf::Time::Zero),
 		_hasFinishObstacle(false),
 		_hand(new Hand()),
-		_handTotal()
+		_handTotal(),
+		_player(new Player(500)),
+		_currentBet(0)
 	{
 		// initialize clock and time vectors
 		const auto obstacleTypeEnumSize = int (ObstacleType::COUNT_AT_END);
@@ -100,19 +102,38 @@ namespace GEX {
 				if (_hitButtonBoundingBox.contains(mouse))
 				{
 					std::cout << "Hit Button Pressed\n";
-					deal();
+					hit();
 				}
 				else if (_stayButtonBoundingBox.contains(mouse))
 				{
 					std::cout << "Stay Button Pressed\n";
+					stay();
 				}
 				else if (_doubleButtonBoundingBox.contains(mouse))
 				{
 					std::cout << "Double Button Pressed\n";
+					playerDouble();
 				}
 				else if (_splitButtonBoundingBox.contains(mouse))
 				{
 					std::cout << "Split Button Pressed\n";
+					split();
+				}
+				else if (_bet5ButtonBoundingBox.contains(mouse)) {
+					std::cout << "Bet 5 Button Pressed\n";
+					bet(5);
+				} 
+				else if (_bet25ButtonBoundingBox.contains(mouse)) {
+					std::cout << "Bet 25 Button Pressed\n";
+					bet(25);
+				}
+				else if (_betMaxButtonBoundingBox.contains(mouse)) {
+					std::cout << "Bet Max Button Pressed\n";
+					bet(_player->getTotalMoney());
+				} 
+				else if (_dealButtonBoundingBox.contains(mouse)) {
+					std::cout << "Deal Button Pressed \n";
+					deal();
 				}
 				else
 				{
@@ -130,7 +151,8 @@ namespace GEX {
 			_isMouseButtonDown = false;
 		}
 
-		updateHandTotal();
+		updateTexts();
+		drawPlayerCards();
 	}
 
 	//Manages players movement patterns created from world interaction
@@ -184,15 +206,18 @@ namespace GEX {
 		_score += score;
 	}
 	//update for player movement
-	void World::updateHandTotal()
+	void World::updateTexts()
 	{
 		if (_hand->getHandTotal() > 21)
 			_handTotal->setText("BUSTED!!!");
 		else
 			_handTotal->setText("Hand Total: " + std::to_string(_hand->getHandTotal()));
+
+		_currentBetText->setText("Current Bet: " + std::to_string(_currentBet));
+		_remainingMoneyText->setText("Remaining Money: " + std::to_string(_player->getTotalMoney()));
 	}
 
-	void World::deal()
+	void World::hit()
 	{
 		if (_hand->getHandTotal() <= 21)
 		{
@@ -201,19 +226,64 @@ namespace GEX {
 			//Card* aceTest = new Card(_textures, Card::Face::Ace, Card::Suit::Club, CardType::AceClub);
 			//_hand->addCard(*aceTest);
 			_hand->addCard(card);
-			drawCard(card);
+			//drawPlayerCard(card);
 		}
 	}
 
-	void World::drawCard(Card& card)
+	void World::deal()
+	{
+		_hand->clear();
+		_deck->shuffle();
+		for (int i = 0; i < 2; i++) 
+		{
+			Card& card = _deck->drawCard();
+			_hand->addCard(card);
+			//drawPlayerCard(card);
+		}
+
+		//std::cout << _deck->getDeckSize();
+	}
+
+	void World::split()
+	{
+	}
+
+	void World::playerDouble()
+	{
+	}
+
+	void World::stay()
+	{
+	}
+
+	void World::bet(int amount)
+	{
+		_player->betMoney(amount);
+		_currentBet += amount;
+	}
+
+	void World::drawPlayerCards()
 	{
 		// Testing Aces
 		//std::unique_ptr<Card> cardDraw(new Card(_textures, Card::Face::Ace, Card::Suit::Club, CardType::AceClub));
+		if (_hand->handSize() > 0)
+		{
+			for (int i = 0; i < _hand->handSize(); i++)
+			{
+				std::unique_ptr<Card> cardDraw(new Card(_textures, _hand->getCard(i).getFace(), _hand->getCard(i).getSuit(), _hand->getCard(i).getType()));
+				cardDraw->setPosition(200 + (i * 100), 500);
+				cardDraw->setScale(0.3, 0.3);
+				_sceneLayers[Background]->attachChild(std::move(cardDraw));
+			}
+		}
+		//std::unique_ptr<Card> cardDraw(new Card(_textures, card.getFace(), card.getSuit(), card.getType()));
+		//cardDraw->setPosition(100 + (_hand->handSize() * 100), 500);
+		//cardDraw->setScale(0.3, 0.3);
+		//_sceneLayers[Background]->attachChild(std::move(cardDraw));	
+	}
 
-		std::unique_ptr<Card> cardDraw(new Card(_textures, card.getFace(), card.getSuit(), card.getType()));
-		cardDraw->setPosition(100 + (_hand->handSize() * 100), 500);
-		cardDraw->setScale(0.3, 0.3);
-		_sceneLayers[Background]->attachChild(std::move(cardDraw));	
+	void World::drawDealerCard(Card & card)
+	{
 	}
 
 	//loads textures
@@ -225,6 +295,10 @@ namespace GEX {
 		_textures.load(GEX::TextureID::StayButton, "Media/Textures/Stay.png");
 		_textures.load(GEX::TextureID::DoubleButton, "Media/Textures/Double.png");
 		_textures.load(GEX::TextureID::SplitButton, "Media/Textures/Split.png");
+		_textures.load(GEX::TextureID::Bet5Button, "Media/Textures/bet5.png");
+		_textures.load(GEX::TextureID::Bet25Button, "Media/Textures/bet25.png");
+		_textures.load(GEX::TextureID::BetMaxButton, "Media/Textures/betmax.png");
+		_textures.load(GEX::TextureID::DealButton, "Media/Textures/deal.png");
 		_textures.load(GEX::TextureID::Frog, "Media/Textures/Atlas.png");
 		_textures.load(GEX::TextureID::Entities, "Media/Textures/Atlas.png");
 		_textures.load(GEX::TextureID::LilyPad, "Media/Textures/LilyPad.png");
@@ -243,20 +317,28 @@ namespace GEX {
 		}
 		//Connects Hand Total display system
 		std::unique_ptr<TextNode> handTotalTxt(new TextNode(""));
-		handTotalTxt->setText("Score: " + std::to_string(_score));
+		handTotalTxt->setText("Hand Total: " + std::to_string(_hand->getHandTotal()));
 		handTotalTxt->setPosition(100, 0);
 		handTotalTxt->setSize(50);
 		_handTotal = handTotalTxt.get();
 		_sceneLayers[UpperField]->attachChild((std::move(handTotalTxt)));
 
-		////Connects life display system
-		//std::unique_ptr<TextNode> lifeTxt(new TextNode(""));
-		//lifeTxt->setText("Lives: ");
-		//lifeTxt->setPosition(300, 0);
-		//lifeTxt->setSize(50);
-		//_lifeText = lifeTxt.get();
-		//_sceneLayers[UpperField]->attachChild((std::move(lifeTxt)));
-		//
+		// Connects Current Bet display system
+		std::unique_ptr<TextNode> currentBetTxt(new TextNode(""));
+		currentBetTxt->setText("Current Bet: " + std::to_string(_currentBet));
+		currentBetTxt->setPosition(104, 50);
+		currentBetTxt->setSize(50);
+		_currentBetText = currentBetTxt.get();
+		_sceneLayers[UpperField]->attachChild((std::move(currentBetTxt)));
+
+		// Connects Money Left display system
+		std::unique_ptr<TextNode> moneyLeftTxt(new TextNode(""));
+		moneyLeftTxt->setText("Remaining Money: " + std::to_string(_player->getTotalMoney()));
+		moneyLeftTxt->setPosition(157, 100);
+		moneyLeftTxt->setSize(50);
+		_remainingMoneyText = moneyLeftTxt.get();
+		_sceneLayers[UpperField]->attachChild((std::move(moneyLeftTxt)));
+
 		//sets background
 		sf::Texture& texture = _textures.get(TextureID::Landscape);
 		sf::IntRect textureRect(_worldBounds);
@@ -280,28 +362,27 @@ namespace GEX {
 		//_hitButtonSprite = hitButtonSprite->getSprite();
 		//_sceneLayers[Background]->attachChild(std::move(hitButtonSprite));
 
+		// Create all buttons
+		sf::IntRect texturesRect(_worldBounds);
+
 		sf::Texture& hitTexture = _textures.get(TextureID::HitButton);
-		sf::IntRect hitRect(_worldBounds);
 		std::unique_ptr<SpriteNode> hitButton(new SpriteNode(hitTexture));
 		hitButton->setPosition(-25, 500);
 		hitButton->scale(0.5, 0.5);
-		//_hitButtonSprite = hitButton->getSprite();
 		_hitButtonBoundingBox = hitButton->getBoundingBox();
 		_sceneLayers[Background]->attachChild(std::move(hitButton));
 		
 		sf::Texture& stayTexture = _textures.get(TextureID::StayButton);
-		sf::IntRect stayRect(_worldBounds);
 		stayTexture.setRepeated(false);
-		std::unique_ptr<SpriteNode> stayButton(new SpriteNode(stayTexture, stayRect));
+		std::unique_ptr<SpriteNode> stayButton(new SpriteNode(stayTexture, texturesRect));
 		stayButton->setPosition(-25, 600);
 		stayButton->scale(0.5, 0.5);
 		_stayButtonBoundingBox = stayButton->getBoundingBox();
 		_sceneLayers[Background]->attachChild(std::move(stayButton));
 
 		sf::Texture& doubleTexture = _textures.get(TextureID::DoubleButton);
-		sf::IntRect doubleRect(_worldBounds);
 		doubleTexture.setRepeated(false);
-		std::unique_ptr<SpriteNode> doubleButton(new SpriteNode(doubleTexture, doubleRect));
+		std::unique_ptr<SpriteNode> doubleButton(new SpriteNode(doubleTexture, texturesRect));
 		doubleButton->setPosition(810, 500);
 		doubleButton->scale(0.5, 0.5);
 		_doubleButtonBoundingBox = doubleButton->getBoundingBox();
@@ -310,13 +391,44 @@ namespace GEX {
 		std::unique_ptr<Deck> deck(new Deck(_textures));
 
 		sf::Texture& splitTexture = _textures.get(TextureID::SplitButton);
-		sf::IntRect splitRect(_worldBounds);
 		splitTexture.setRepeated(false);
-		std::unique_ptr<SpriteNode> splitButton(new SpriteNode(splitTexture, splitRect));
+		std::unique_ptr<SpriteNode> splitButton(new SpriteNode(splitTexture, texturesRect));
 		splitButton->setPosition(810, 600);
 		splitButton->scale(0.5, 0.5);
 		_splitButtonBoundingBox = splitButton->getBoundingBox();
 		_sceneLayers[Background]->attachChild(std::move(splitButton));
+
+		sf::Texture& bet5Texture = _textures.get(TextureID::Bet5Button);
+		bet5Texture.setRepeated(false);
+		std::unique_ptr<SpriteNode> bet5Button(new SpriteNode(bet5Texture, texturesRect));
+		bet5Button->setPosition(225, 625);
+		bet5Button->scale(0.4, 0.4);
+		_bet5ButtonBoundingBox = bet5Button->getBoundingBox();
+		_sceneLayers[Background]->attachChild(std::move(bet5Button));
+
+		sf::Texture& bet25Texture = _textures.get(TextureID::Bet25Button);
+		bet25Texture.setRepeated(false);
+		std::unique_ptr<SpriteNode> bet25Button(new SpriteNode(bet25Texture, texturesRect));
+		bet25Button->setPosition(350, 625);
+		bet25Button->scale(0.4, 0.4);
+		_bet25ButtonBoundingBox = bet25Button->getBoundingBox();
+		_sceneLayers[Background]->attachChild(std::move(bet25Button));
+
+		sf::Texture& betMaxTexture = _textures.get(TextureID::BetMaxButton);
+		betMaxTexture.setRepeated(false);
+		std::unique_ptr<SpriteNode> betMaxButton(new SpriteNode(betMaxTexture, texturesRect));
+		betMaxButton->setPosition(475, 625);
+		betMaxButton->scale(0.4, 0.4);
+		_betMaxButtonBoundingBox = betMaxButton->getBoundingBox();
+		_sceneLayers[Background]->attachChild(std::move(betMaxButton));
+
+		sf::Texture& dealTexture = _textures.get(TextureID::DealButton);
+		dealTexture.setRepeated(false);
+		std::unique_ptr<SpriteNode> dealbutton(new SpriteNode(dealTexture, texturesRect));
+		dealbutton->setPosition(600, 625);
+		dealbutton->scale(0.4, 0.4);
+		_dealButtonBoundingBox = dealbutton->getBoundingBox();
+		_sceneLayers[Background]->attachChild(std::move(dealbutton));
 	}
 	//checks collision categories pairs
 	bool matchesCategories(SceneNode::Pair& colliders, Category::Type type1, Category::Type type2)

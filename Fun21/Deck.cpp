@@ -47,4 +47,9 @@ namespace GEX
 	{
 		std::random_shuffle(_deck.begin(), _deck.end());
 	}
+
+	int Deck::getDeckSize()
+	{
+		return _deck.size();
+	}
 }

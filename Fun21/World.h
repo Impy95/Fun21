@@ -13,6 +13,7 @@
 #include "Frog.h"
 #include "Deck.h"
 #include "Hand.h"
+#include "Player.h"
 #include "CommandQueue.h"
 #include <vector>
 #include "PostEffect.h"
@@ -41,9 +42,15 @@ namespace GEX {
 		sf::FloatRect					getViewBounds() const;
 		void							destroyEntitesOutOfView();
 		void							addScore(int score);
-		void							updateHandTotal();
+		void							updateTexts();
+		void							hit();
 		void							deal();
-		void							drawCard(Card& card);
+		void							split();
+		void							playerDouble();
+		void							stay();
+		void							bet(int amount);
+		void							drawPlayerCards();
+		void							drawDealerCard(Card& card);
 	private:
 		enum Layer {
 			Background = 0,
@@ -80,11 +87,19 @@ namespace GEX {
 		sf::FloatRect					_stayButtonBoundingBox;
 		sf::FloatRect					_doubleButtonBoundingBox;
 		sf::FloatRect					_splitButtonBoundingBox;
+		sf::FloatRect					_bet5ButtonBoundingBox;
+		sf::FloatRect					_bet25ButtonBoundingBox;
+		sf::FloatRect					_betMaxButtonBoundingBox;
+		sf::FloatRect					_dealButtonBoundingBox;
 		bool							_isMouseButtonDown;
 
+		Player*							_player;
+		int								_currentBet;
 		Deck*							_deck;
 		Hand*							_hand;
 		TextNode*						_handTotal;
+		TextNode*						_currentBetText;
+		TextNode*						_remainingMoneyText;
 
 		SceneNode						_sceneGraph;
 		std::vector<SceneNode*>			_sceneLayers;
