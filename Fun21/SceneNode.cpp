@@ -18,11 +18,11 @@ namespace GEX {
 
 	}
 
-
 	void SceneNode::attachChild(Ptr child) {
 		child->_parent = this;
 		_children.push_back(std::move(child));
 	}
+
 	SceneNode::Ptr SceneNode::detachChild(const SceneNode & node)
 	{
 		auto found = std::find_if(_children.begin(), _children.end(), [&](Ptr& p) {
@@ -32,13 +32,28 @@ namespace GEX {
 		Ptr result = std::move(*found);
 		_children.erase(found);
 		return result;
-
 	}
+
+	void SceneNode::removeChild(const SceneNode & node)
+	{
+		auto found = std::find_if(_children.begin(), _children.end(), [&](Ptr& p) {
+			return &node == p.get();
+		});
+		assert(found != _children.end());
+		_children.erase(found);
+	}
+
 	void SceneNode::update(sf::Time dt, CommandQueue& commands)
 	{
 		updateCurrent(dt,commands);
 		updateChildren(dt,commands);
 	}
+
+	void SceneNode::removeAllChildren()
+	{
+		_children.clear();
+	}
+
 	sf::Transform SceneNode::getWorldTransform() const
 	{
 		sf::Transform transform = sf::Transform::Identity;
@@ -73,7 +88,7 @@ namespace GEX {
 		box.setFillColor(sf::Color::Transparent);
 		box.setOutlineColor(sf::Color::Green);
 		box.setOutlineThickness(2.f);
-		target.draw(box);
+		//target.draw(box);
 	}
 	sf::Vector2f SceneNode::getWorldPosition() const
 	{

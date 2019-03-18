@@ -24,7 +24,7 @@ namespace GEX
 
 	unsigned int Card::getCategory() const
 	{
-		return 0;
+		return Category::Card;
 	}
 
 	sf::FloatRect Card::getBoundingBox() const
@@ -78,5 +78,6 @@ namespace GEX
 
 	void Card::remove()
 	{
+		Entity::remove();
 	}
 }

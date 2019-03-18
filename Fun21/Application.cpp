@@ -9,8 +9,9 @@
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.0f / 60.0f);
 
+//1024, 689
 Application::Application()
-	:_window(sf::VideoMode(1024,689),"Fun 21",sf::Style::Close),
+	:_window(sf::VideoMode(1024,740),"Fun 21",sf::Style::Close),
 	_player(),
 	_font(),
 	_textures(),
@@ -77,7 +78,8 @@ void Application::update(sf::Time deltaTime)
 void Application::render()
 {
 	//sf::Color backgroundColour = sf::Color(139, 0, 0, 0);
-	_window.clear(sf::Color(139, 0, 0, 0));
+	//_window.clear(sf::Color(139, 0, 0, 0));
+	_window.clear();
 	_stateStack.draw();
 	_window.setView(_window.getDefaultView());
 	_window.display();

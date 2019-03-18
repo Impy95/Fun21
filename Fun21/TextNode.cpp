@@ -18,7 +18,7 @@ GEX::TextNode::TextNode(const std::string & text)
 void GEX::TextNode::setText(const std::string & text)
 {
 	_text.setString(text);
-	centerOrigin(_text);
+	//centerOrigin(_text);
 }
 
 

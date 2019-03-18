@@ -29,6 +29,7 @@ namespace sf {
 	class RenderTarget;
 }
 namespace GEX {
+	using CardPtr = std::unique_ptr<Card>;
 	class World
 	{
 	public:
@@ -56,6 +57,7 @@ namespace GEX {
 			Background = 0,
 			LowerField,
 			UpperField,
+			Cards,
 			LayerCount
 		};
 		struct SpawnPoint {
@@ -97,6 +99,7 @@ namespace GEX {
 		int								_currentBet;
 		Deck*							_deck;
 		Hand*							_hand;
+		std::vector<CardPtr*>			_cards;
 		TextNode*						_handTotal;
 		TextNode*						_currentBetText;
 		TextNode*						_remainingMoneyText;

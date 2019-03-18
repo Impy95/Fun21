@@ -21,7 +21,7 @@ namespace GEX {
 	}
 	const sf::Time TIMETILLCAR1SPAWN = sf::seconds(1.5f);
 	const sf::Time TIMETILLTRACTORSPAWN = sf::seconds(2.0f);
-
+	const int MAXBET = 200;
 
 	World::World(sf::RenderWindow& outputWindow, sf::RenderTarget& outputTarget, SoundPlayer& sounds)
 		: _window(outputWindow),
@@ -49,8 +49,9 @@ namespace GEX {
 		_hasFinishObstacle(false),
 		_hand(new Hand()),
 		_handTotal(),
-		_player(new Player(500)),
-		_currentBet(0)
+		_player(new Player(500000)),
+		_currentBet(0),
+		_cards()
 	{
 		// initialize clock and time vectors
 		const auto obstacleTypeEnumSize = int (ObstacleType::COUNT_AT_END);
@@ -129,7 +130,7 @@ namespace GEX {
 				}
 				else if (_betMaxButtonBoundingBox.contains(mouse)) {
 					std::cout << "Bet Max Button Pressed\n";
-					bet(_player->getTotalMoney());
+					bet(MAXBET);
 				} 
 				else if (_dealButtonBoundingBox.contains(mouse)) {
 					std::cout << "Deal Button Pressed \n";
@@ -152,7 +153,6 @@ namespace GEX {
 		}
 
 		updateTexts();
-		drawPlayerCards();
 	}
 
 	//Manages players movement patterns created from world interaction
@@ -210,6 +210,8 @@ namespace GEX {
 	{
 		if (_hand->getHandTotal() > 21)
 			_handTotal->setText("BUSTED!!!");
+		else if (_hand->getHandTotal() == 21)
+			_handTotal->setText("BLACKJACK!!!");
 		else
 			_handTotal->setText("Hand Total: " + std::to_string(_hand->getHandTotal()));
 
@@ -219,14 +221,14 @@ namespace GEX {
 
 	void World::hit()
 	{
-		if (_hand->getHandTotal() <= 21)
+		if (_hand->getHandTotal() < 21)
 		{
 			_deck->shuffle();
 			Card& card = _deck->drawCard();
 			//Card* aceTest = new Card(_textures, Card::Face::Ace, Card::Suit::Club, CardType::AceClub);
 			//_hand->addCard(*aceTest);
 			_hand->addCard(card);
-			//drawPlayerCard(card);
+			drawPlayerCards();
 		}
 	}
 
@@ -240,7 +242,7 @@ namespace GEX {
 			_hand->addCard(card);
 			//drawPlayerCard(card);
 		}
-
+		drawPlayerCards();
 		//std::cout << _deck->getDeckSize();
 	}
 
@@ -258,23 +260,44 @@ namespace GEX {
 
 	void World::bet(int amount)
 	{
-		_player->betMoney(amount);
-		_currentBet += amount;
+		if (_currentBet < 200)
+		{
+			if (_currentBet + amount > 200)
+			{
+				// If amount puts current bet over 200
+				// Take amount over off the current bet
+				int amountOver = _currentBet + amount - 200;
+				int betAmount = MAXBET - amountOver;
+				_player->betMoney(betAmount);
+				_currentBet += betAmount;
+			}
+			else
+			{
+				_player->betMoney(amount);
+				_currentBet += amount;
+			}
+		}
 	}
 
 	void World::drawPlayerCards()
 	{
+		_sceneLayers[Cards]->removeAllChildren();
 		// Testing Aces
 		//std::unique_ptr<Card> cardDraw(new Card(_textures, Card::Face::Ace, Card::Suit::Club, CardType::AceClub));
 		if (_hand->handSize() > 0)
 		{
 			for (int i = 0; i < _hand->handSize(); i++)
 			{
+				std::cout << _hand->handSize() << "\n";
 				std::unique_ptr<Card> cardDraw(new Card(_textures, _hand->getCard(i).getFace(), _hand->getCard(i).getSuit(), _hand->getCard(i).getType()));
 				cardDraw->setPosition(200 + (i * 100), 500);
 				cardDraw->setScale(0.3, 0.3);
-				_sceneLayers[Background]->attachChild(std::move(cardDraw));
+				_sceneLayers[Cards]->attachChild(std::move(cardDraw));
 			}
+			//for (int i = 0; i < _cards.size() - 1; i++)
+			//{
+			//	_sceneLayers[Background]->attachChild(std::move(*_cards[i]));
+			//}
 		}
 		//std::unique_ptr<Card> cardDraw(new Card(_textures, card.getFace(), card.getSuit(), card.getType()));
 		//cardDraw->setPosition(100 + (_hand->handSize() * 100), 500);
@@ -315,10 +338,11 @@ namespace GEX {
 			_sceneLayers.push_back(layer.get());
 			_sceneGraph.attachChild(std::move(layer));
 		}
+
 		//Connects Hand Total display system
 		std::unique_ptr<TextNode> handTotalTxt(new TextNode(""));
 		handTotalTxt->setText("Hand Total: " + std::to_string(_hand->getHandTotal()));
-		handTotalTxt->setPosition(100, 0);
+		handTotalTxt->setPosition(50, 670);
 		handTotalTxt->setSize(50);
 		_handTotal = handTotalTxt.get();
 		_sceneLayers[UpperField]->attachChild((std::move(handTotalTxt)));
@@ -326,7 +350,7 @@ namespace GEX {
 		// Connects Current Bet display system
 		std::unique_ptr<TextNode> currentBetTxt(new TextNode(""));
 		currentBetTxt->setText("Current Bet: " + std::to_string(_currentBet));
-		currentBetTxt->setPosition(104, 50);
+		currentBetTxt->setPosition(350, 670);
 		currentBetTxt->setSize(50);
 		_currentBetText = currentBetTxt.get();
 		_sceneLayers[UpperField]->attachChild((std::move(currentBetTxt)));
@@ -334,7 +358,7 @@ namespace GEX {
 		// Connects Money Left display system
 		std::unique_ptr<TextNode> moneyLeftTxt(new TextNode(""));
 		moneyLeftTxt->setText("Remaining Money: " + std::to_string(_player->getTotalMoney()));
-		moneyLeftTxt->setPosition(157, 100);
+		moneyLeftTxt->setPosition(650, 670);
 		moneyLeftTxt->setSize(50);
 		_remainingMoneyText = moneyLeftTxt.get();
 		_sceneLayers[UpperField]->attachChild((std::move(moneyLeftTxt)));
