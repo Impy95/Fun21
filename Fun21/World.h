@@ -44,20 +44,28 @@ namespace GEX {
 		void							destroyEntitesOutOfView();
 		void							addScore(int score);
 		void							updateTexts();
-		void							hit();
+		void							hit(Hand* hand);
 		void							deal();
 		void							split();
 		void							playerDouble();
 		void							stay();
 		void							bet(int amount);
+		void							clearBet();
 		void							drawPlayerCards();
-		void							drawDealerCard(Card& card);
+		void							drawDealerCards();
+		bool							isBlackJack(Hand* hand) { return hand->getHandTotal() == 21; }
+		bool							isBusted(Hand* hand) { return hand->getHandTotal() > 21; }
+		void							dealersTurn();
+		bool							handHasAce(Hand* hand);
+		void							endRound();
+		void							clearAllCards();
 	private:
 		enum Layer {
 			Background = 0,
 			LowerField,
 			UpperField,
 			Cards,
+			DealerCards,
 			LayerCount
 		};
 		struct SpawnPoint {
@@ -85,6 +93,8 @@ namespace GEX {
 		TextNode*						_scoreText;
 		TextNode*						_lifeText;
 
+		sf::Sprite						_backgroundSprite;
+
 		sf::FloatRect					_hitButtonBoundingBox;
 		sf::FloatRect					_stayButtonBoundingBox;
 		sf::FloatRect					_doubleButtonBoundingBox;
@@ -93,14 +103,19 @@ namespace GEX {
 		sf::FloatRect					_bet25ButtonBoundingBox;
 		sf::FloatRect					_betMaxButtonBoundingBox;
 		sf::FloatRect					_dealButtonBoundingBox;
+		sf::FloatRect					_clearBetButtonBoundingBox;
 		bool							_isMouseButtonDown;
+		bool							_isBetting;
+		bool							_isPlayersTurn;
 
 		Player*							_player;
 		int								_currentBet;
 		Deck*							_deck;
 		Hand*							_hand;
+		Hand*							_dealerHand;
 		std::vector<CardPtr*>			_cards;
 		TextNode*						_handTotal;
+		TextNode*						_dealerHandTotal;
 		TextNode*						_currentBetText;
 		TextNode*						_remainingMoneyText;
 

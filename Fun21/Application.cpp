@@ -11,7 +11,7 @@ const sf::Time Application::TimePerFrame = sf::seconds(1.0f / 60.0f);
 
 //1024, 689
 Application::Application()
-	:_window(sf::VideoMode(1024,740),"Fun 21",sf::Style::Close),
+	:_window(sf::VideoMode(1024,840),"Fun 21",sf::Style::Close),
 	_player(),
 	_font(),
 	_textures(),
