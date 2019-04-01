@@ -338,8 +338,6 @@ namespace GEX {
 	void World::drawPlayerCards()
 	{
 		_sceneLayers[Cards]->removeAllChildren();
-		// Testing Aces
-		//std::unique_ptr<Card> cardDraw(new Card(_textures, Card::Face::Ace, Card::Suit::Club, CardType::AceClub));
 		if (_hand->handSize() > 0)
 		{
 			for (int i = 0; i < _hand->handSize(); i++)
@@ -350,15 +348,7 @@ namespace GEX {
 				cardDraw->setScale(0.3, 0.3);
 				_sceneLayers[Cards]->attachChild(std::move(cardDraw));
 			}
-			//for (int i = 0; i < _cards.size() - 1; i++)
-			//{
-			//	_sceneLayers[Background]->attachChild(std::move(*_cards[i]));
-			//}
 		}
-		//std::unique_ptr<Card> cardDraw(new Card(_textures, card.getFace(), card.getSuit(), card.getType()));
-		//cardDraw->setPosition(100 + (_hand->handSize() * 100), 500);
-		//cardDraw->setScale(0.3, 0.3);
-		//_sceneLayers[Background]->attachChild(std::move(cardDraw));	
 	}
 
 	void World::drawDealerCards()
