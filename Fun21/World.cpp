@@ -22,6 +22,7 @@ namespace GEX {
 	}
 	const sf::Time TIMETILLCAR1SPAWN = sf::seconds(1.5f);
 	const sf::Time TIMETILLTRACTORSPAWN = sf::seconds(2.0f);
+	sf::Time timeSinceLastUpdate = sf::Time::Zero;
 	const int MAXBET = 200;
 
 	World::World(sf::RenderWindow& outputWindow, sf::RenderTarget& outputTarget, SoundPlayer& sounds)
@@ -40,14 +41,6 @@ namespace GEX {
 		_lifeText(),
 		_animationPlaying(false),
 		_isMouseButtonDown(false),
-		_riverArea(0.f, 75.f, 480.f, 240.f),
-		_turtle3Counter(0),
-		_turtle2Counter(0),
-		_crocCounter(0),
-		_levelCounter(1),
-		_lilypadCounter(0),
-		_currentFinishSpawnTimer(sf::Time::Zero),
-		_hasFinishObstacle(false),
 		_isBetting(true),
 		_isPlayersTurn(true),
 		_hand(new Hand()),
@@ -169,6 +162,10 @@ namespace GEX {
 		}
 
 		updateTexts();
+		if (_allCards.size() > 0)
+			drawPlayerCard(dt);
+		if (_dealerCards.size() > 0)
+			drawDealerCard(dt);
 	}
 
 	//Manages players movement patterns created from world interaction
@@ -252,9 +249,9 @@ namespace GEX {
 			//_hand->addCard(*aceTest);
 			hand->addCard(card);
 			if (hand == _hand)
-				drawPlayerCards();
+				initalDrawPlayerCard(card);
 			if (hand == _dealerHand)
-				drawDealerCards();
+				initialDrawDealerCard(card);
 
 			if (hand == _hand && (isBlackJack(_hand) || isBusted(_hand)))
 			{
@@ -268,18 +265,32 @@ namespace GEX {
 	{
 		if (_currentBet > 0)
 		{
+			_allCards.clear();
+			_cardTimers.clear();
+			_clocks.clear();
+			_dealerCards.clear();
+			_dealerTimers.clear();
+			_dealerClocks.clear();
+			_sceneLayers[Cards]->removeAllChildren();
+			_sceneLayers[DealerCards]->removeAllChildren();
 			_hand->clear();
 			_dealerHand->clear();
 			_deck->shuffle();
-			Card& card1 = _deck->drawCard();
-			Card& card2 = _deck->drawCard();
-			Card& card3 = _deck->drawCard();
+			Card& card1 = _deck->drawCard();			
+			Card& card2 = _deck->drawCard();			
+			Card& card3 = _deck->drawCard();			
 			Card& card4 = _deck->drawCard();
+			
 
 			_hand->addCard(card1);
 			_dealerHand->addCard(card2);
 			_hand->addCard(card3);
 			_dealerHand->addCard(card4);
+
+			initalDrawPlayerCard(card1);
+			initalDrawPlayerCard(card3);
+			initialDrawDealerCard(card2);
+			initialDrawDealerCard(card4);
 
 			//for (int i = 0; i < 2; i++)
 			//{
@@ -287,8 +298,8 @@ namespace GEX {
 			//	_hand->addCard(card);
 			//	//drawPlayerCard(card);
 			//}
-			drawPlayerCards();
-			drawDealerCards();
+			//drawPlayerCards();
+			//drawDealerCards();
 			_isBetting = false;
 			//std::cout << _deck->getDeckSize();
 		}
@@ -337,7 +348,9 @@ namespace GEX {
 
 	void World::drawPlayerCards()
 	{
-		_sceneLayers[Cards]->removeAllChildren();
+		float factor = 0.f, speed = .1f;
+
+		//_sceneLayers[Cards]->removeAllChildren();
 		if (_hand->handSize() > 0)
 		{
 			for (int i = 0; i < _hand->handSize(); i++)
@@ -346,9 +359,52 @@ namespace GEX {
 				std::unique_ptr<Card> cardDraw(new Card(_textures, _hand->getCard(i).getFace(), _hand->getCard(i).getSuit(), _hand->getCard(i).getType()));
 				cardDraw->setPosition(200 + (i * 100), 500);
 				cardDraw->setScale(0.3, 0.3);
+				_allCards.push_back(cardDraw.get());
 				_sceneLayers[Cards]->attachChild(std::move(cardDraw));
 			}
 		}
+	}
+
+	void World::initalDrawPlayerCard(Card & card)
+	{
+		std::unique_ptr<Card> cardDraw(new Card(_textures,card.getFace(), card.getSuit(), card.getType()));
+		cardDraw->setPosition(850, 50);
+		cardDraw->setScale(0.3, 0.3);
+		_allCards.push_back(cardDraw.get());
+		_sceneLayers[Cards]->attachChild(std::move(cardDraw));
+	}
+
+	void World::drawPlayerCard(sf::Time dt)
+	{
+		float factor = 0.f, speed = .4f;
+
+		sf::Vector2f positionA = sf::Vector2f(850, 50);
+			
+		for (int i = 0; i < _allCards.size(); i++)
+		{
+			sf::Vector2f positionB = sf::Vector2f(200 + (i * 100), 500);
+
+			if (_allCards[i]->getPosition() != positionB)
+			{
+				if (_clocks.size() != _allCards.size())
+				{
+					sf::Clock clock;
+					_clocks.push_back(clock);
+					sf::Time time;
+					_cardTimers.push_back(time);
+				}
+				_cardTimers[i] += _clocks[i].restart();
+				factor += _cardTimers[i].asSeconds() * speed;
+
+				_allCards[i]->setPosition(interpolate(positionA, positionB, factor));
+			}
+		}
+		
+		//timeSinceLastUpdate += _clock.restart();
+		//factor += timeSinceLastUpdate.asSeconds() * speed;
+
+		//_allCards[0]->setPosition(interpolate(positionA, positionB, factor));
+
 	}
 
 	void World::drawDealerCards()
@@ -377,6 +433,43 @@ namespace GEX {
 				dealerCard->setPosition(500, 100);
 				dealerCard->setScale(0.3, 0.3);
 				_sceneLayers[DealerCards]->attachChild(std::move(dealerCard));
+			}
+		}
+	}
+
+	void World::initialDrawDealerCard(Card & card)
+	{
+		std::unique_ptr<Card> dealerCard(new Card(_textures, _dealerHand->getCard(1).getFace()
+			, _dealerHand->getCard(1).getSuit(), _dealerHand->getCard(1).getType()));
+		dealerCard->setPosition(850, 50);
+		dealerCard->setScale(0.3, 0.3);
+		_dealerCards.push_back(dealerCard.get());
+		_sceneLayers[DealerCards]->attachChild(std::move(dealerCard));
+	}
+
+	void World::drawDealerCard(sf::Time dt)
+	{
+		float factor = 0.f, speed = .4f;
+
+		sf::Vector2f positionA = sf::Vector2f(850, 50);
+
+		for (int i = 0; i < _dealerCards.size(); i++)
+		{
+			sf::Vector2f positionB = sf::Vector2f(200 + (i * 100), 100);
+
+			if (_dealerCards[i]->getPosition() != positionB)
+			{
+				if (_dealerClocks.size() != _dealerCards.size())
+				{
+					sf::Clock clock;
+					_dealerClocks.push_back(clock);
+					sf::Time time;
+					_dealerTimers.push_back(time);
+				}
+				_dealerTimers[i] += _dealerClocks[i].restart();
+				factor += _dealerTimers[i].asSeconds() * speed;
+
+				_dealerCards[i]->setPosition(interpolate(positionA, positionB, factor));
 			}
 		}
 	}
@@ -447,6 +540,17 @@ namespace GEX {
 	{
 		_sceneLayers[DealerCards]->removeAllChildren();
 		_sceneLayers[Cards]->removeAllChildren();
+	}
+
+	sf::Vector2f World::interpolate(const sf::Vector2f & pointA, const sf::Vector2f & pointB, float factor)
+	{
+		if (factor > 1.f)
+			factor = 1.f;
+
+		else if (factor < 0.f)
+			factor = 0.f;
+
+		return pointA + (pointB - pointA) * factor;
 	}
 
 	//loads textures
@@ -630,48 +734,5 @@ namespace GEX {
 	//handles collisions between player and obstacles
 	void World::handleCollisions()
 	{
-		//build list of colliding pairs of scenenodes
-		std::set<SceneNode::Pair> collisionPairs;
-		_sceneGraph.checkSceneCollision(_sceneGraph, collisionPairs);
-		//_player->setIsOnPlatform(false);
-		for (SceneNode::Pair pair : collisionPairs) {
-			//if (matchesCategories(pair, Category::Type::Frog, Category::Type::KillObstacle)) {
-			//	if(_player->getLives() > 0)
-			//		_player->die();
-			//}
-			if (matchesCategories(pair, Category::Type::Frog, Category::Type::Finish)) {
-				auto& finish = static_cast<Obstacle&>(*(pair.second));
-				if (!finish.hasFinishFrog() && !finish.hasCroc()) {
-					finish.setHasFinishFrog(true);
-					addScore(500);
-					if (_lilypadCounter < 5)
-						_lilypadCounter++;
-					// checks if all lily pads have been filled
-					if (_lilypadCounter == 5)
-					{
-						// increases level by resetting all lily pads and increasing level counter
-						//increaseLevel();
-					}
-					//resetPlayer();
-				}
-				//else {
-				//	if (_player->getLives() > 0)
-				//		_player->die();
-				//}
-			}
-			if (matchesCategories(pair, Category::Type::Frog, Category::Type::PlatformObstacle))
-			{
-				auto& platform = static_cast<Obstacle&>(*(pair.second));
-				//if(platform.isActive())
-				//	_player->setIsOnPlatform(true);
-				//else
-				//	_player->setIsOnPlatform(false);
-			}
-			if (matchesCategories(pair, Category::Type::Frog, Category::Type::BonusObstacle)) {
-				auto& bonus = static_cast<Obstacle&>(*(pair.second));
-				addScore(1000);
-				bonus.destroy();
-			}
-		}
 	}
 }

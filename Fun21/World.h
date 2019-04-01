@@ -52,13 +52,18 @@ namespace GEX {
 		void							bet(int amount);
 		void							clearBet();
 		void							drawPlayerCards();
+		void							initalDrawPlayerCard(Card& card);
+		void							drawPlayerCard(sf::Time dt);
 		void							drawDealerCards();
+		void							initialDrawDealerCard(Card& card);
+		void							drawDealerCard(sf::Time dt);
 		bool							isBlackJack(Hand* hand) { return hand->getHandTotal() == 21; }
 		bool							isBusted(Hand* hand) { return hand->getHandTotal() > 21; }
 		void							dealersTurn();
 		bool							handHasAce(Hand* hand);
 		void							endRound();
 		void							clearAllCards();
+		sf::Vector2f					interpolate(const sf::Vector2f& pointA, const sf::Vector2f& pointB, float factor);
 	private:
 		enum Layer {
 			Background = 0,
@@ -108,6 +113,13 @@ namespace GEX {
 		bool							_isBetting;
 		bool							_isPlayersTurn;
 
+		std::vector<Card*>				_allCards;
+		std::vector<Card*>				_dealerCards;
+		std::vector<sf::Clock>			_clocks;
+		std::vector<sf::Clock>			_dealerClocks;
+		std::vector<sf::Time>			_cardTimers;
+		std::vector<sf::Time>			_dealerTimers;
+
 		Player*							_player;
 		int								_currentBet;
 		Deck*							_deck;
@@ -125,33 +137,15 @@ namespace GEX {
 		sf::FloatRect					_worldBounds;
 		sf::Vector2f					_spawnPosition;
 		float							_scrollSpeeds;
-		//Frog*							_player;
 		int								_score;
-		sf::FloatRect					_riverArea;
-
-		std::vector<SpawnPoint>			_obstacleSpawnPoint;
-		std::vector<Obstacle*>			_lilyPads;
 
 		sf::Clock						_clock;
-		sf::Clock						_tractorClock;
-		sf::Time						_car1SpawnTimer;
-		sf::Time						_tractorSpawnTimer;
 
 		//std::vector<sf::Time>			_clocks;
 		std::vector<sf::Time>			_spawnTimers;
 		std::vector<ObstacleType>		_obstacleTypes;
 		std::vector<sf::Time>			_spawnConst;
 		bool							_animationPlaying;
-
-		int								_turtle3Counter;
-		int								_turtle2Counter;
-		int								_crocCounter;
-		int								_levelCounter;
-		int								_lilypadCounter;
-		sf::Time						_currentFinishSpawnTimer;
-		bool							_hasFinishObstacle;
-		Obstacle*						_finishObstacle;
-		std::vector<sf::Vector2f>		_finishObstacleSpawnPoints;
 	};
 
 
