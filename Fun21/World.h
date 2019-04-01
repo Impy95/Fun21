@@ -51,12 +51,11 @@ namespace GEX {
 		void							stay();
 		void							bet(int amount);
 		void							clearBet();
-		void							drawPlayerCards();
 		void							initalDrawPlayerCard(Card& card);
 		void							drawPlayerCard(sf::Time dt);
-		void							drawDealerCards();
 		void							initialDrawDealerCard(Card& card);
 		void							drawDealerCard(sf::Time dt);
+		void							moveCardBack(sf::Time dt);
 		bool							isBlackJack(Hand* hand) { return hand->getHandTotal() == 21; }
 		bool							isBusted(Hand* hand) { return hand->getHandTotal() > 21; }
 		void							dealersTurn();
@@ -71,6 +70,7 @@ namespace GEX {
 			UpperField,
 			Cards,
 			DealerCards,
+			CardBack,
 			LayerCount
 		};
 		struct SpawnPoint {
@@ -86,7 +86,6 @@ namespace GEX {
 		void							loadTextures();
 		void							buildScene();
 		void							handleCollisions();
-		bool							isHitButtonClicked();
 	private:
 		sf::RenderWindow&				_window;
 		BloomEffect						_bloomEffect;
@@ -112,13 +111,18 @@ namespace GEX {
 		bool							_isMouseButtonDown;
 		bool							_isBetting;
 		bool							_isPlayersTurn;
+		bool							_dealing;
 
+		SpriteNode*						_cardBack;
+		std::vector<sf::Clock>			_cardBackClock;
+		std::vector<sf::Time>			_cardBackTime;
 		std::vector<Card*>				_allCards;
 		std::vector<Card*>				_dealerCards;
 		std::vector<sf::Clock>			_clocks;
 		std::vector<sf::Clock>			_dealerClocks;
 		std::vector<sf::Time>			_cardTimers;
 		std::vector<sf::Time>			_dealerTimers;
+		std::unique_ptr<Card>			_dealersFirstCard;
 
 		Player*							_player;
 		int								_currentBet;

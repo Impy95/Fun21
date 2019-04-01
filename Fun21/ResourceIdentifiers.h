@@ -24,7 +24,8 @@ namespace GEX {
 		Bet25Button,
 		BetMaxButton,
 		DealButton,
-		ClearBetButton
+		ClearBetButton,
+		CardBack
 	};
 	enum class FontID {
 		Main

@@ -43,6 +43,7 @@ namespace GEX {
 		_isMouseButtonDown(false),
 		_isBetting(true),
 		_isPlayersTurn(true),
+		_dealing(true),
 		_hand(new Hand()),
 		_dealerHand(new Hand()),
 		_handTotal(),
@@ -166,6 +167,8 @@ namespace GEX {
 			drawPlayerCard(dt);
 		if (_dealerCards.size() > 0)
 			drawDealerCard(dt);
+		if (_cardBack != NULL)
+			moveCardBack(dt);
 	}
 
 	//Manages players movement patterns created from world interaction
@@ -265,43 +268,50 @@ namespace GEX {
 	{
 		if (_currentBet > 0)
 		{
+			// Set dealing to true
+			_dealing = true;
+
+			// Clear all vectors for the new hands
 			_allCards.clear();
 			_cardTimers.clear();
 			_clocks.clear();
 			_dealerCards.clear();
 			_dealerTimers.clear();
 			_dealerClocks.clear();
+			_cardBackClock.clear();
+			_cardBackTime.clear();
+			_cardBack = NULL;
+
+			// Remove all current cards from being drawn
 			_sceneLayers[Cards]->removeAllChildren();
 			_sceneLayers[DealerCards]->removeAllChildren();
+			
+			// Clear the hands
 			_hand->clear();
 			_dealerHand->clear();
+			
+			// Shuffle the deck
 			_deck->shuffle();
+
+			// Draw the cards
 			Card& card1 = _deck->drawCard();			
 			Card& card2 = _deck->drawCard();			
 			Card& card3 = _deck->drawCard();			
 			Card& card4 = _deck->drawCard();
 			
-
+			// Add the cards to their respesctive hands and draw them
 			_hand->addCard(card1);
-			_dealerHand->addCard(card2);
-			_hand->addCard(card3);
-			_dealerHand->addCard(card4);
-
 			initalDrawPlayerCard(card1);
-			initalDrawPlayerCard(card3);
+			_dealerHand->addCard(card2);
 			initialDrawDealerCard(card2);
+			_hand->addCard(card3);
+			initalDrawPlayerCard(card3);
+			_dealerHand->addCard(card4);
 			initialDrawDealerCard(card4);
 
-			//for (int i = 0; i < 2; i++)
-			//{
-			//	Card& card = _deck->drawCard();
-			//	_hand->addCard(card);
-			//	//drawPlayerCard(card);
-			//}
-			//drawPlayerCards();
-			//drawDealerCards();
+			// Set the betting phase to false
 			_isBetting = false;
-			//std::cout << _deck->getDeckSize();
+
 		}
 	}
 
@@ -315,7 +325,9 @@ namespace GEX {
 
 	void World::stay()
 	{
+		// Ends players turn
 		_isPlayersTurn = false;
+		// Begins dealers turn
 		dealersTurn();
 	}
 
@@ -346,24 +358,6 @@ namespace GEX {
 		_currentBet = 0;
 	}
 
-	void World::drawPlayerCards()
-	{
-		float factor = 0.f, speed = .1f;
-
-		//_sceneLayers[Cards]->removeAllChildren();
-		if (_hand->handSize() > 0)
-		{
-			for (int i = 0; i < _hand->handSize(); i++)
-			{
-				std::cout << _hand->handSize() << "\n";
-				std::unique_ptr<Card> cardDraw(new Card(_textures, _hand->getCard(i).getFace(), _hand->getCard(i).getSuit(), _hand->getCard(i).getType()));
-				cardDraw->setPosition(200 + (i * 100), 500);
-				cardDraw->setScale(0.3, 0.3);
-				_allCards.push_back(cardDraw.get());
-				_sceneLayers[Cards]->attachChild(std::move(cardDraw));
-			}
-		}
-	}
 
 	void World::initalDrawPlayerCard(Card & card)
 	{
@@ -407,44 +401,46 @@ namespace GEX {
 
 	}
 
-	void World::drawDealerCards()
+	void World::initialDrawDealerCard(Card & card)
 	{
-		_sceneLayers[DealerCards]->removeAllChildren();
-		// Testing Aces
-		//std::unique_ptr<Card> cardDraw(new Card(_textures, Card::Face::Ace, Card::Suit::Club, CardType::AceClub));
-		if (_dealerHand->handSize() > 0)
+		if (!_isPlayersTurn)
 		{
-			if (!_isPlayersTurn)
+			std::unique_ptr<Card> dealerCard(new Card(_textures, card.getFace()
+				, card.getSuit(), card.getType()));
+			dealerCard->setPosition(850, 50);
+			dealerCard->setScale(0.3, 0.3);
+			_dealerCards.push_back(dealerCard.get());
+			_sceneLayers[DealerCards]->attachChild(std::move(dealerCard));
+		}
+		else
+		{
+			if (_dealerHand->handSize() == 1)
 			{
-				for (int i = 0; i < _dealerHand->handSize(); i++)
-				{
-					std::cout << _hand->handSize() << "\n";
-					std::unique_ptr<Card> cardDraw(new Card(_textures, _dealerHand->getCard(i).getFace()
-						, _dealerHand->getCard(i).getSuit(), _dealerHand->getCard(i).getType()));
-					cardDraw->setPosition(200 + (i * 100), 100);
-					cardDraw->setScale(0.3, 0.3);
-					_sceneLayers[DealerCards]->attachChild(std::move(cardDraw));
-				}
+				std::unique_ptr<Card> dealerCard(new Card(_textures, card.getFace()
+					, card.getSuit(), card.getType()));
+				dealerCard->setScale(0.3, 0.3);
+				dealerCard->setPosition(200, 100);
+				_dealerCards.push_back(dealerCard.get());
+				_dealersFirstCard = std::move(dealerCard);
+
+				sf::Texture& cardBackTexture = _textures.get(TextureID::CardBack);
+				std::unique_ptr<SpriteNode> cardBack(new SpriteNode(cardBackTexture));
+				cardBack->setPosition(850, 50);
+				cardBack->scale(0.2, 0.2);
+				_cardBack = cardBack.get();
+				_sceneLayers[CardBack]->attachChild(std::move(cardBack));
+				//_sceneLayers[DealerCards]->attachChild(std::move(dealerCard));
 			}
 			else
 			{
 				std::unique_ptr<Card> dealerCard(new Card(_textures, _dealerHand->getCard(1).getFace()
 					, _dealerHand->getCard(1).getSuit(), _dealerHand->getCard(1).getType()));
-				dealerCard->setPosition(500, 100);
+				dealerCard->setPosition(850, 50);
 				dealerCard->setScale(0.3, 0.3);
+				_dealerCards.push_back(dealerCard.get());
 				_sceneLayers[DealerCards]->attachChild(std::move(dealerCard));
 			}
 		}
-	}
-
-	void World::initialDrawDealerCard(Card & card)
-	{
-		std::unique_ptr<Card> dealerCard(new Card(_textures, _dealerHand->getCard(1).getFace()
-			, _dealerHand->getCard(1).getSuit(), _dealerHand->getCard(1).getType()));
-		dealerCard->setPosition(850, 50);
-		dealerCard->setScale(0.3, 0.3);
-		_dealerCards.push_back(dealerCard.get());
-		_sceneLayers[DealerCards]->attachChild(std::move(dealerCard));
 	}
 
 	void World::drawDealerCard(sf::Time dt)
@@ -453,32 +449,75 @@ namespace GEX {
 
 		sf::Vector2f positionA = sf::Vector2f(850, 50);
 
-		for (int i = 0; i < _dealerCards.size(); i++)
+		if (_dealing)
 		{
-			sf::Vector2f positionB = sf::Vector2f(200 + (i * 100), 100);
-
-			if (_dealerCards[i]->getPosition() != positionB)
+			sf::Vector2f positionB = sf::Vector2f(300, 100);
+			if (_dealerClocks.size() != 2)
 			{
-				if (_dealerClocks.size() != _dealerCards.size())
-				{
-					sf::Clock clock;
-					_dealerClocks.push_back(clock);
-					sf::Time time;
-					_dealerTimers.push_back(time);
-				}
-				_dealerTimers[i] += _dealerClocks[i].restart();
-				factor += _dealerTimers[i].asSeconds() * speed;
-
-				_dealerCards[i]->setPosition(interpolate(positionA, positionB, factor));
+				sf::Clock clock;
+				_dealerClocks.push_back(clock);
+				_dealerClocks.push_back(clock);
+				sf::Time time;
+				_dealerTimers.push_back(time);
+				_dealerTimers.push_back(time);	
 			}
+			_dealerTimers[1] += _dealerClocks[1].restart();
+			factor += _dealerTimers[1].asSeconds() * speed;
+
+			_dealerCards[1]->setPosition(interpolate(positionA, positionB, factor));
+		}
+		else
+		{
+			for (int i = 0; i < _dealerCards.size(); i++)
+			{
+				sf::Vector2f positionB = sf::Vector2f(200 + (i * 100), 100);
+
+				if (_dealerCards[i]->getPosition() != positionB)
+				{
+					if (_dealerClocks.size() < _dealerCards.size())
+					{
+						sf::Clock clock;
+						_dealerClocks.push_back(clock);
+						sf::Time time;
+						_dealerTimers.push_back(time);
+					}
+					_dealerTimers[i] += _dealerClocks[i].restart();
+					factor += _dealerTimers[i].asSeconds() * speed;
+
+					_dealerCards[i]->setPosition(interpolate(positionA, positionB, factor));
+				}
+			}
+		}
+	}
+
+	void World::moveCardBack(sf::Time dt)
+	{
+		float factor = 0.f, speed = .4f;
+
+		sf::Vector2f positionA = sf::Vector2f(850, 50);
+		sf::Vector2f positionB = sf::Vector2f(200, 100);
+
+		if (_cardBack != NULL)
+		{
+			sf::Clock clock;
+			_cardBackClock.push_back(clock);
+			sf::Time time;
+			_cardBackTime.push_back(time);
+			_cardBackTime[0] += _cardBackClock[0].restart();
+			factor += _cardBackTime[0].asSeconds() * speed;
+
+			_cardBack->setPosition(interpolate(positionA, positionB, factor));
 		}
 	}
 
 	void World::dealersTurn()
 	{
 		_isPlayersTurn = false;
+		_dealing = false;
 		bool finishedHitting = false;
 
+		_sceneLayers[CardBack]->removeAllChildren();
+		_sceneLayers[DealerCards]->attachChild(std::move(_dealersFirstCard));
 		while (!finishedHitting)
 		{
 			if (_dealerHand->getHandTotal() < 17 || (_dealerHand->getHandTotal() < 18 && handHasAce(_dealerHand)))
@@ -567,9 +606,7 @@ namespace GEX {
 		_textures.load(GEX::TextureID::BetMaxButton, "Media/Textures/betmax.png");
 		_textures.load(GEX::TextureID::DealButton, "Media/Textures/deal.png");
 		_textures.load(GEX::TextureID::ClearBetButton, "Media/Textures/clearBet.png");
-		_textures.load(GEX::TextureID::Frog, "Media/Textures/Atlas.png");
-		_textures.load(GEX::TextureID::Entities, "Media/Textures/Atlas.png");
-		_textures.load(GEX::TextureID::LilyPad, "Media/Textures/LilyPad.png");
+		_textures.load(GEX::TextureID::CardBack, "Media/Textures/card_back.png");
 		
 	}
 
