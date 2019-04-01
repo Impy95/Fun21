@@ -48,7 +48,7 @@ namespace GEX {
 		_dealerHand(new Hand()),
 		_handTotal(),
 		_dealerHandTotal(),
-		_player(new Player(500000)),
+		_player(new Player(1000)),
 		_currentBet(0),
 		_cards()
 	{
@@ -107,23 +107,18 @@ namespace GEX {
 				if (_isBetting)
 				{
 					if (_bet5ButtonBoundingBox.contains(mouse)) {
-						std::cout << "Bet 5 Button Pressed\n";
 						bet(5);
 					}
 					else if (_bet25ButtonBoundingBox.contains(mouse)) {
-						std::cout << "Bet 25 Button Pressed\n";
 						bet(25);
 					}
 					else if (_betMaxButtonBoundingBox.contains(mouse)) {
-						std::cout << "Bet Max Button Pressed\n";
 						bet(MAXBET);
 					}
 					else if (_dealButtonBoundingBox.contains(mouse)) {
-						std::cout << "Deal Button Pressed \n";
 						deal();
 					}
 					else if (_clearBetButtonBoundingBox.contains(mouse)) {
-						std::cout << "Clear Bet Button Pressed \n";
 						clearBet();
 					}
 				}
@@ -131,28 +126,21 @@ namespace GEX {
 				{
 					if (_hitButtonBoundingBox.contains(mouse))
 					{
-						std::cout << "Hit Button Pressed\n";
 						hit(_hand);
 					}
 					else if (_stayButtonBoundingBox.contains(mouse))
 					{
-						std::cout << "Stay Button Pressed\n";
 						stay();
 					}
 					else if (_doubleButtonBoundingBox.contains(mouse))
 					{
-						std::cout << "Double Button Pressed\n";
 						playerDouble();
 					}
 					else if (_splitButtonBoundingBox.contains(mouse))
 					{
-						std::cout << "Split Button Pressed\n";
 						split();
 					}
 				}
-
-				std::cout << "Mouse X: " << mouse.x
-					<< "\nMouse Y: " << mouse.y << "\n";
 			}
 
 			_isMouseButtonDown = true;
@@ -554,6 +542,7 @@ namespace GEX {
 		else if (isBusted(_dealerHand))
 		{
 			std::cout << "Player won\n";
+			_player->addMoney(_currentBet * 2);
 		}
 		else if (_dealerHand->getHandTotal() > _hand->getHandTotal() || isBlackJack(_dealerHand))
 		{
@@ -564,10 +553,12 @@ namespace GEX {
 		{
 			// player wins
 			std::cout << "Player won\n";
+			_player->addMoney(_currentBet * 2);
 		}
 		else if (_hand->getHandTotal() == _dealerHand->getHandTotal())
 		{
 			std::cout << "Push";
+			_player->addMoney(_currentBet);
 		}
 		_currentBet = 0;
 		_isPlayersTurn = true;
