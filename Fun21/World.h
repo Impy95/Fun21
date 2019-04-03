@@ -134,6 +134,7 @@ namespace GEX {
 		TextNode*						_dealerHandTotal;
 		TextNode*						_currentBetText;
 		TextNode*						_remainingMoneyText;
+		TextNode*						_winningsText;
 
 		SceneNode						_sceneGraph;
 		std::vector<SceneNode*>			_sceneLayers;

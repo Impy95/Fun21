@@ -10,8 +10,10 @@
 const sf::Time Application::TimePerFrame = sf::seconds(1.0f / 60.0f);
 
 //1024, 689
+// 1245, 700
+// 1024 840
 Application::Application()
-	:_window(sf::VideoMode(1024,840),"Fun 21",sf::Style::Close),
+	:_window(sf::VideoMode(1024, 840),"Fun 21",sf::Style::Close),
 	_player(),
 	_font(),
 	_textures(),
@@ -20,7 +22,7 @@ Application::Application()
 {
 	_window.setKeyRepeatEnabled(false);
 	GEX::FontManager::getInstance().load(GEX::FontID::Main,"Media/apple_kid.ttf");
-	_textures.load(GEX::TextureID::TitleScreen, "Media/Textures/FroggerTitle.png");
+	_textures.load(GEX::TextureID::TitleScreen, "Media/Textures/TitleScreenNew.png");
 	_textures.load(GEX::TextureID::GexScreen, "Media/Textures/face.png");
 
 

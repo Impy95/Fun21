@@ -15,6 +15,7 @@ TitleState::TitleState(GEX::StateStack & stack, Context context)
 	_textEffectTime(sf::Time::Zero)
 {
 	_backgroundSprite.setTexture(context.textures->get(GEX::TextureID::TitleScreen));
+	_backgroundSprite.setScale(0.822, 1.2);
 	_text.setFont(GEX::FontManager::getInstance().getFont(GEX::FontID::Main));
 	_text.setString("PRESS ANY KEY TO START!");
 	_text.setFillColor(sf::Color::Red);

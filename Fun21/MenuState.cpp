@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: MenuState.cpp
 *@description: The state of the application when the menu is active
 */

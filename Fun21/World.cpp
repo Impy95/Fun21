@@ -90,6 +90,14 @@ namespace GEX {
 		}
 		_sceneGraph.update(dt,_command);
 
+		if (isBlackJack(_hand) || isBusted(_hand))
+		{
+			_isPlayersTurn = false;
+			dealersTurn();
+		}
+		//if (isBlackJack(_hand))
+		//	endRound();
+
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			if (!_isMouseButtonDown)
@@ -243,12 +251,6 @@ namespace GEX {
 				initalDrawPlayerCard(card);
 			if (hand == _dealerHand)
 				initialDrawDealerCard(card);
-
-			if (hand == _hand && (isBlackJack(_hand) || isBusted(_hand)))
-			{
-				_isPlayersTurn = false;
-				dealersTurn();
-			}
 		}
 	}
 
@@ -309,6 +311,13 @@ namespace GEX {
 
 	void World::playerDouble()
 	{
+		_currentBet *= 2;
+
+		_player->betMoney(_currentBet);
+
+		hit(_hand);
+
+		dealersTurn();
 	}
 
 	void World::stay()
@@ -535,35 +544,48 @@ namespace GEX {
 
 	void World::endRound()
 	{
-		if (isBusted(_hand))
+		if (isBlackJack(_hand))
+		{
+			std::cout << "Blackjack";
+			_player->addMoney(_currentBet * 1.5 + _currentBet);
+			_winningsText->setText("You Won: " + std::to_string(_currentBet * 1.5 + _currentBet));
+		}
+		else if (isBusted(_hand))
 		{
 			std::cout << "Dealer won\n";
+			_winningsText->setText("Dealer Won");
 		}
 		else if (isBusted(_dealerHand))
 		{
 			std::cout << "Player won\n";
 			_player->addMoney(_currentBet * 2);
+			_winningsText->setText("You Won: " + std::to_string(_currentBet * 2));
 		}
 		else if (_dealerHand->getHandTotal() > _hand->getHandTotal() || isBlackJack(_dealerHand))
 		{
 			// dealer wins
 			std::cout << "Dealer won\n";
+			_winningsText->setText("Dealer Won");
 		}
 		else if (_hand->getHandTotal() > _dealerHand->getHandTotal())
 		{
 			// player wins
 			std::cout << "Player won\n";
 			_player->addMoney(_currentBet * 2);
+			_winningsText->setText("You Won: " + std::to_string(_currentBet * 2));
 		}
 		else if (_hand->getHandTotal() == _dealerHand->getHandTotal())
 		{
 			std::cout << "Push";
 			_player->addMoney(_currentBet);
+			_winningsText->setText("You Pushed");
 		}
 		_currentBet = 0;
 		_isPlayersTurn = true;
 		_isBetting = true;
 		//clearAllCards();
+		_hand->clear();
+		_dealerHand->clear();
 	}
 
 	void World::clearAllCards()
@@ -626,6 +648,12 @@ namespace GEX {
 		dealerHandTotalTxt->setSize(50);
 		_dealerHandTotal = dealerHandTotalTxt.get();
 		_sceneLayers[UpperField]->attachChild((std::move(dealerHandTotalTxt)));
+
+		std::unique_ptr<TextNode> winningsTxt(new TextNode(""));
+		winningsTxt->setPosition(300, 770);
+		winningsTxt->setSize(50);
+		_winningsText = winningsTxt.get();
+		_sceneLayers[UpperField]->attachChild(std::move(winningsTxt));
 
 		// Connects Current Bet display system
 		std::unique_ptr<TextNode> currentBetTxt(new TextNode(""));
