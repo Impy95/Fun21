@@ -13,6 +13,7 @@ MenuState::MenuState(GEX::StateStack & stack, Context context)
 {
 	sf::Texture& texture = context.textures->get(GEX::TextureID::TitleScreen);
 	_backgroundSprite.setTexture(texture);
+	_backgroundSprite.setScale(0.822, 1.2);
 
 	//set up menu
 	sf::Text playOption;

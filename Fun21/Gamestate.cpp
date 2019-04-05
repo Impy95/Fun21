@@ -11,7 +11,7 @@
 		_world(*context.window, *context.window, *context.sound),
 		player(*context.player)
 	{
-		context.music->play(GEX::MusicID::MissionTheme);
+		context.music->play(GEX::MusicID::GameTheme);
 	}
 	void Gamestate::draw()
 	{
@@ -27,6 +27,11 @@
 			player.setMissionStatus(GEX::MissionStatus::MissionSuccess);
 			requestStackPush(GEX::StateID::GameOver);
 		}*/
+		if (!_world.hasMoneyLeft() && !_world.isRoundinProgess())
+		{
+			player.setMissionStatus(GEX::MissionStatus::MissionFailure);
+			requestStackPush(GEX::StateID::GameOver);
+		}
 		_world.update(dt);
 		GEX::CommandQueue& commands = _world.getCommandQueue();
 		player.handleRealTimeInput(commands);

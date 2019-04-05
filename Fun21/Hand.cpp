@@ -62,4 +62,10 @@ namespace GEX
 
 		return total;
 	}
+	void Hand::splitHand(Hand& originalHand, Hand& splitHand)
+	{
+		Card& splitCard = originalHand.getCard(1);
+		originalHand.removeCard(1);
+		splitHand.addCard(splitCard);
+	}
 }

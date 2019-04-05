@@ -42,7 +42,6 @@ namespace GEX {
 
 		sf::FloatRect					getViewBounds() const;
 		void							destroyEntitesOutOfView();
-		void							addScore(int score);
 		void							updateTexts();
 		void							hit(Hand* hand);
 		void							deal();
@@ -55,6 +54,7 @@ namespace GEX {
 		void							drawPlayerCard(sf::Time dt);
 		void							initialDrawDealerCard(Card& card);
 		void							drawDealerCard(sf::Time dt);
+		void							drawSplitHands();
 		void							moveCardBack(sf::Time dt);
 		bool							isBlackJack(Hand* hand) { return hand->getHandTotal() == 21; }
 		bool							isBusted(Hand* hand) { return hand->getHandTotal() > 21; }
@@ -63,6 +63,8 @@ namespace GEX {
 		void							endRound();
 		void							clearAllCards();
 		sf::Vector2f					interpolate(const sf::Vector2f& pointA, const sf::Vector2f& pointB, float factor);
+		bool							hasMoneyLeft() { return _player->getTotalMoney() > 0; }
+		bool							isRoundinProgess() { return _roundInProgress; }
 	private:
 		enum Layer {
 			Background = 0,
@@ -88,14 +90,11 @@ namespace GEX {
 		void							handleCollisions();
 	private:
 		sf::RenderWindow&				_window;
-		BloomEffect						_bloomEffect;
 		sf::RenderTarget&				_target;
 		sf::RenderTexture				_sceneTexture;
 		sf::View						_worldview;
 		TextureManager					_textures;
 		SoundPlayer&					_sounds;
-		TextNode*						_scoreText;
-		TextNode*						_lifeText;
 
 		sf::Sprite						_backgroundSprite;
 
@@ -112,17 +111,25 @@ namespace GEX {
 		bool							_isBetting;
 		bool							_isPlayersTurn;
 		bool							_dealing;
+		bool							_roundInProgress;
+		bool							_hasSplit;
+		bool							_firstHandTurn;
+		bool							_splitHandTurn;
 
 		SpriteNode*						_cardBack;
 		std::vector<sf::Clock>			_cardBackClock;
 		std::vector<sf::Time>			_cardBackTime;
 		std::vector<Card*>				_allCards;
+		std::vector<Card*>				_splitCards;
 		std::vector<Card*>				_dealerCards;
 		std::vector<sf::Clock>			_clocks;
 		std::vector<sf::Clock>			_dealerClocks;
 		std::vector<sf::Time>			_cardTimers;
 		std::vector<sf::Time>			_dealerTimers;
+		std::vector<sf::Clock>			_splitClocks;
+		std::vector<sf::Time>			_splitTimers;
 		std::unique_ptr<Card>			_dealersFirstCard;
+		std::vector<Hand*>				_splitHands;
 
 		Player*							_player;
 		int								_currentBet;
@@ -135,22 +142,14 @@ namespace GEX {
 		TextNode*						_currentBetText;
 		TextNode*						_remainingMoneyText;
 		TextNode*						_winningsText;
+		TextNode*						_splitHandTotalText;
 
 		SceneNode						_sceneGraph;
 		std::vector<SceneNode*>			_sceneLayers;
 		CommandQueue					_command;
 		sf::FloatRect					_worldBounds;
-		sf::Vector2f					_spawnPosition;
-		float							_scrollSpeeds;
-		int								_score;
 
 		sf::Clock						_clock;
-
-		//std::vector<sf::Time>			_clocks;
-		std::vector<sf::Time>			_spawnTimers;
-		std::vector<ObstacleType>		_obstacleTypes;
-		std::vector<sf::Time>			_spawnConst;
-		bool							_animationPlaying;
 	};
 
 

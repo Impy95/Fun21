@@ -33,13 +33,7 @@ namespace GEX {
 		_sceneGraph(),
 		_sceneLayers(),
 		_worldBounds(0.f, 0.f, _worldview.getSize().x, _worldview.getSize().y),
-		_spawnPosition(_worldview.getSize().x / 2.f, _worldview.getSize().y),
-		_scrollSpeeds(-50.f),
-		_bloomEffect(),
 		_sounds(sounds),
-		_scoreText(),
-		_lifeText(),
-		_animationPlaying(false),
 		_isMouseButtonDown(false),
 		_isBetting(true),
 		_isPlayersTurn(true),
@@ -50,19 +44,13 @@ namespace GEX {
 		_dealerHandTotal(),
 		_player(new Player(1000)),
 		_currentBet(0),
-		_cards()
+		_cards(),
+		_firstHandTurn(false),
+		_splitHandTurn(false),
+		_splitHands()
 	{
-		// initialize clock and time vectors
-		const auto obstacleTypeEnumSize = int (ObstacleType::COUNT_AT_END);
-		for (int i = 0; i < obstacleTypeEnumSize - 1; i++)
-		{
-			sf::Time time;
-			_spawnTimers.push_back(time);
-			_obstacleTypes.push_back(ObstacleType(i));
-		}
 		_sceneTexture.create(_target.getSize().x, _target.getSize().y);
 		loadTextures();
-		_score = 0;
 		buildScene();
 		
 		//prep the view
@@ -90,10 +78,29 @@ namespace GEX {
 		}
 		_sceneGraph.update(dt,_command);
 
-		if (isBlackJack(_hand) || isBusted(_hand))
+		if ((isBlackJack(_hand) || isBusted(_hand)) && !_hasSplit)
 		{
 			_isPlayersTurn = false;
 			dealersTurn();
+		}
+		else if ((isBlackJack(_hand) || isBusted(_hand)) && _hasSplit)
+		{
+			_firstHandTurn = false;
+			_splitHandTurn = true;
+		}
+
+		if (_splitHands.size() > 0)
+		{
+			if (isBlackJack(_splitHands[0]) || isBusted(_splitHands[0]))
+			{
+				_isPlayersTurn = false;
+				dealersTurn();
+			}
+		}
+
+		if (_hasSplit && !_splitHandTurn)
+		{
+			_firstHandTurn = true;
 		}
 		//if (isBlackJack(_hand))
 		//	endRound();
@@ -132,10 +139,12 @@ namespace GEX {
 				}
 				else
 				{
-					if (_hitButtonBoundingBox.contains(mouse))
+					if (_hitButtonBoundingBox.contains(mouse) && _firstHandTurn)
 					{
 						hit(_hand);
 					}
+					else if (_hitButtonBoundingBox.contains(mouse) && _splitHandTurn)
+						hit(_splitHands[0]);
 					else if (_stayButtonBoundingBox.contains(mouse))
 					{
 						stay();
@@ -159,8 +168,16 @@ namespace GEX {
 		}
 
 		updateTexts();
-		if (_allCards.size() > 0)
-			drawPlayerCard(dt);
+		if (_splitHands.size() > 0)
+		{
+			if (_allCards.size() > 0)
+				drawSplitHands();
+		}
+		else
+		{
+			if (_allCards.size() > 0)
+				drawPlayerCard(dt);
+		}
 		if (_dealerCards.size() > 0)
 			drawDealerCard(dt);
 		if (_cardBack != NULL)
@@ -212,11 +229,6 @@ namespace GEX {
 		_command.push(command);
 	}
 
-	//adds to score count
-	void World::addScore(int score)
-	{
-		_score += score;
-	}
 	//update for player movement
 	void World::updateTexts()
 	{
@@ -232,6 +244,10 @@ namespace GEX {
 		//else
 		//	_handTotal->setText("Your Hand: " + std::to_string(_hand->getHandTotal()));
 
+		if (_splitHands.size() > 0)
+		{
+			_splitHandTotalText->setText("Your Split Hand: " + std::to_string(_splitHands[0]->getHandTotal()));
+		}
 		_dealerHandTotal->setText("Dealer hand: " + std::to_string(_dealerHand->getHandTotal()));
 
 		_currentBetText->setText("Current Bet: " + std::to_string(_currentBet));
@@ -263,6 +279,8 @@ namespace GEX {
 
 			// Clear all vectors for the new hands
 			_allCards.clear();
+			_splitHands.clear();
+			_splitCards.clear();
 			_cardTimers.clear();
 			_clocks.clear();
 			_dealerCards.clear();
@@ -307,6 +325,16 @@ namespace GEX {
 
 	void World::split()
 	{
+		if (_hand->getCard(0).getFace() == _hand->getCard(1).getFace())
+		{
+			std::cout << "You are in here\n";
+			Hand* splitHand = new Hand();
+			_splitHands.push_back(splitHand);
+			_hand->splitHand(*_hand, *_splitHands[0]);
+			_splitCards.push_back(_allCards[1]);
+			_allCards.pop_back();
+			_hasSplit = true;
+		}
 	}
 
 	void World::playerDouble()
@@ -322,16 +350,31 @@ namespace GEX {
 
 	void World::stay()
 	{
-		// Ends players turn
-		_isPlayersTurn = false;
-		// Begins dealers turn
-		dealersTurn();
+		if (_hasSplit)
+		{
+			if (_firstHandTurn)
+			{
+				_firstHandTurn = false;
+				_splitHandTurn = true;
+			}
+		}
+		else
+		{
+			// Ends players turn
+			_isPlayersTurn = false;
+			// Begins dealers turn
+			dealersTurn();
+		}
 	}
 
 	void World::bet(int amount)
 	{
+		_roundInProgress = true;
 		if (_currentBet < 200)
 		{
+			if (_player->getTotalMoney() - amount < 0)
+				amount = _player->getTotalMoney();
+
 			if (_currentBet + amount > 200)
 			{
 				// If amount puts current bet over 200
@@ -358,11 +401,22 @@ namespace GEX {
 
 	void World::initalDrawPlayerCard(Card & card)
 	{
-		std::unique_ptr<Card> cardDraw(new Card(_textures,card.getFace(), card.getSuit(), card.getType()));
-		cardDraw->setPosition(850, 50);
-		cardDraw->setScale(0.3, 0.3);
-		_allCards.push_back(cardDraw.get());
-		_sceneLayers[Cards]->attachChild(std::move(cardDraw));
+		if (_splitHandTurn)
+		{
+			std::unique_ptr<Card> cardDraw(new Card(_textures, card.getFace(), card.getSuit(), card.getType()));
+			cardDraw->setPosition(850, 50);
+			cardDraw->setScale(0.3, 0.3);
+			_splitCards.push_back(cardDraw.get());
+			_sceneLayers[Cards]->attachChild(std::move(cardDraw));
+		}
+		else
+		{
+			std::unique_ptr<Card> cardDraw(new Card(_textures, card.getFace(), card.getSuit(), card.getType()));
+			cardDraw->setPosition(850, 50);
+			cardDraw->setScale(0.3, 0.3);
+			_allCards.push_back(cardDraw.get());
+			_sceneLayers[Cards]->attachChild(std::move(cardDraw));
+		}
 	}
 
 	void World::drawPlayerCard(sf::Time dt)
@@ -370,7 +424,7 @@ namespace GEX {
 		float factor = 0.f, speed = .4f;
 
 		sf::Vector2f positionA = sf::Vector2f(850, 50);
-			
+
 		for (int i = 0; i < _allCards.size(); i++)
 		{
 			sf::Vector2f positionB = sf::Vector2f(200 + (i * 100), 500);
@@ -390,12 +444,81 @@ namespace GEX {
 				_allCards[i]->setPosition(interpolate(positionA, positionB, factor));
 			}
 		}
+
 		
 		//timeSinceLastUpdate += _clock.restart();
 		//factor += timeSinceLastUpdate.asSeconds() * speed;
 
 		//_allCards[0]->setPosition(interpolate(positionA, positionB, factor));
 
+	}
+
+	void World::drawSplitHands()
+	{
+		float factor = 0.f, speed = .4f;
+
+		sf::Vector2f positionA = sf::Vector2f(850, 50);
+
+		for (int i = 0; i < _allCards.size(); i++)
+		{
+			sf::Vector2f positionB = sf::Vector2f(200 + (i * 100), 500);
+
+			if (_allCards[i]->getPosition() != positionB)
+			{
+				if (_clocks.size() != _allCards.size())
+				{
+					sf::Clock clock;
+					_clocks.push_back(clock);
+					sf::Time time;
+					_cardTimers.push_back(time);
+				}
+				_cardTimers[i] += _clocks[i].restart();
+				factor += _cardTimers[i].asSeconds() * speed;
+
+				_allCards[i]->setPosition(interpolate(positionA, positionB, factor));
+			}
+		}
+		if (_splitCards.size() > 0)
+		{
+			for (int i = 0; i < _splitCards.size(); i++)
+			{
+				sf::Vector2f positionB = sf::Vector2f(200 + (i * 100), 350);
+
+				if (_splitCards[i]->getPosition() != positionB)
+				{
+					if (_splitClocks.size() != _splitCards.size())
+					{
+						sf::Clock clock;
+						_splitClocks.push_back(clock);
+						sf::Time time;
+						_splitTimers.push_back(time);
+					}
+					_splitTimers[i] += _splitClocks[i].restart();
+					factor += _splitTimers[i].asSeconds() * speed;
+
+					_splitCards[i]->setPosition(interpolate(positionA, positionB, factor));
+				}
+			}
+		}
+		/*for (int i = 0; i <= _splitHands.size(); i++)
+		{
+			for (int j = 0; j < _allCards.size(); j++)
+			{
+				if (i % 2 != 0)
+				{
+					if (j % 2 != 0)
+					{
+						sf::Vector2f positionB = sf::Vector2f(100 + (j * 100), 500 - (i * 150));
+						_allCards[j]->setPosition(positionB);
+					}
+				}
+				if (j % 2 == 0)
+				{
+					sf::Vector2f positionB = sf::Vector2f(200 + (j * 100), 500);
+					_allCards[j]->setPosition(positionB);
+				}
+			}
+		}*/
 	}
 
 	void World::initialDrawDealerCard(Card & card)
@@ -586,6 +709,9 @@ namespace GEX {
 		//clearAllCards();
 		_hand->clear();
 		_dealerHand->clear();
+		_roundInProgress = false;
+		_hasSplit = false;
+		_splitHands.clear();
 	}
 
 	void World::clearAllCards()
@@ -641,6 +767,13 @@ namespace GEX {
 		handTotalTxt->setSize(50);
 		_handTotal = handTotalTxt.get();
 		_sceneLayers[UpperField]->attachChild((std::move(handTotalTxt)));
+
+		std::unique_ptr<TextNode> splitHandTotalTxt(new TextNode(""));
+		splitHandTotalTxt->setText("");
+		splitHandTotalTxt->setPosition(50, 720);
+		splitHandTotalTxt->setSize(50);
+		_splitHandTotalText = splitHandTotalTxt.get();
+		_sceneLayers[UpperField]->attachChild((std::move(splitHandTotalTxt)));
 
 		std::unique_ptr<TextNode> dealerHandTotalTxt(new TextNode(""));
 		dealerHandTotalTxt->setText("Dealer Hand: " + std::to_string(_dealerHand->getHandTotal()));

@@ -15,6 +15,7 @@ namespace GEX
 		void		clear();
 		Card&		getCard(int index) { return *_hand[index]; }
 		int			getHandTotal();
+		void		splitHand(Hand& originalHand, Hand& splitHand);
 
 	private:
 		std::vector<Card*> _hand;

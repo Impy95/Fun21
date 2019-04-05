@@ -1,5 +1,5 @@
 /**
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: GameState.cpp
 *@description: State when the game plays in
 */

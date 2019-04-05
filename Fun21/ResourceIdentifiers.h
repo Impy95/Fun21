@@ -32,7 +32,7 @@ namespace GEX {
 	};
 	enum class MusicID {
 		MenuTheme,
-		MissionTheme
+		GameTheme
 	};
 	enum class SoundEffectID {
 		FroggerMove,
