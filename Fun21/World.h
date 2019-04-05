@@ -73,6 +73,7 @@ namespace GEX {
 			Cards,
 			DealerCards,
 			CardBack,
+			ArrowIndicator,
 			LayerCount
 		};
 		struct SpawnPoint {
@@ -117,6 +118,7 @@ namespace GEX {
 		bool							_splitHandTurn;
 
 		SpriteNode*						_cardBack;
+		SpriteNode*						_splitHandIndicator;
 		std::vector<sf::Clock>			_cardBackClock;
 		std::vector<sf::Time>			_cardBackTime;
 		std::vector<Card*>				_allCards;
@@ -143,6 +145,7 @@ namespace GEX {
 		TextNode*						_remainingMoneyText;
 		TextNode*						_winningsText;
 		TextNode*						_splitHandTotalText;
+		TextNode*						_whichHandText;
 
 		SceneNode						_sceneGraph;
 		std::vector<SceneNode*>			_sceneLayers;

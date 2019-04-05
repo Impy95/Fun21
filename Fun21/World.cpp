@@ -105,6 +105,11 @@ namespace GEX {
 		//if (isBlackJack(_hand))
 		//	endRound();
 
+		if (_firstHandTurn)
+			_splitHandIndicator->setPosition(150, 500);
+		else if (_splitHandTurn)
+			_splitHandIndicator->setPosition(150, 350);
+
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			if (!_isMouseButtonDown)
@@ -139,12 +144,21 @@ namespace GEX {
 				}
 				else
 				{
-					if (_hitButtonBoundingBox.contains(mouse) && _firstHandTurn)
+					if (_hasSplit)
 					{
-						hit(_hand);
+						if (_hitButtonBoundingBox.contains(mouse) && _firstHandTurn)
+						{
+							hit(_hand);
+						}
+						else if (_hitButtonBoundingBox.contains(mouse) && _splitHandTurn)
+							hit(_splitHands[0]);
+						else if (_stayButtonBoundingBox.contains(mouse) && _firstHandTurn)
+							stay();
+						else if (_stayButtonBoundingBox.contains(mouse) && _splitHandTurn)
+							stay();
 					}
-					else if (_hitButtonBoundingBox.contains(mouse) && _splitHandTurn)
-						hit(_splitHands[0]);
+					else if (_hitButtonBoundingBox.contains(mouse))
+						hit(_hand);
 					else if (_stayButtonBoundingBox.contains(mouse))
 					{
 						stay();
@@ -247,8 +261,17 @@ namespace GEX {
 		if (_splitHands.size() > 0)
 		{
 			_splitHandTotalText->setText("Your Split Hand: " + std::to_string(_splitHands[0]->getHandTotal()));
+			if (_firstHandTurn)
+				_whichHandText->setText("You are on the bottom hand");
+			else if (_splitHandTurn)
+				_whichHandText->setText("You are on the top hand");
 		}
-		_dealerHandTotal->setText("Dealer hand: " + std::to_string(_dealerHand->getHandTotal()));
+		else
+		{
+			_whichHandText->setText("");
+			_splitHandTotalText->setText("");
+		}
+		//_dealerHandTotal->setText("Dealer hand: " + std::to_string(_dealerHand->getHandTotal()));
 
 		_currentBetText->setText("Current Bet: " + std::to_string(_currentBet));
 		_remainingMoneyText->setText("Remaining Money: " + std::to_string(_player->getTotalMoney()));
@@ -263,10 +286,20 @@ namespace GEX {
 			//Card* aceTest = new Card(_textures, Card::Face::Ace, Card::Suit::Club, CardType::AceClub);
 			//_hand->addCard(*aceTest);
 			hand->addCard(card);
-			if (hand == _hand)
-				initalDrawPlayerCard(card);
-			if (hand == _dealerHand)
-				initialDrawDealerCard(card);
+			if (_splitHands.size() > 0)
+			{
+				if (hand == _hand || hand == _splitHands[0])
+					initalDrawPlayerCard(card);
+				if (hand == _dealerHand)
+					initialDrawDealerCard(card);
+			}
+			else
+			{
+				if (hand == _hand)
+					initalDrawPlayerCard(card);
+				if (hand == _dealerHand)
+					initialDrawDealerCard(card);
+			}
 		}
 	}
 
@@ -274,6 +307,9 @@ namespace GEX {
 	{
 		if (_currentBet > 0)
 		{
+			// Hide winning text
+			_winningsText->setText("");
+
 			// Set dealing to true
 			_dealing = true;
 
@@ -327,21 +363,31 @@ namespace GEX {
 	{
 		if (_hand->getCard(0).getFace() == _hand->getCard(1).getFace())
 		{
-			std::cout << "You are in here\n";
+			_player->betMoney(_currentBet);
+			_currentBet *= 2;
 			Hand* splitHand = new Hand();
 			_splitHands.push_back(splitHand);
 			_hand->splitHand(*_hand, *_splitHands[0]);
 			_splitCards.push_back(_allCards[1]);
 			_allCards.pop_back();
 			_hasSplit = true;
+			 
+			// 200, 500
+			// 200, 350
+			sf::Texture& arrowIndicatorTexture = _textures.get(TextureID::ArrowIndicator);
+			std::unique_ptr<SpriteNode> arrowIndicator(new SpriteNode(arrowIndicatorTexture));
+			arrowIndicator->setPosition(150, 500);
+			arrowIndicator->scale(0.05, 0.05);
+			_splitHandIndicator = arrowIndicator.get();
+			_sceneLayers[ArrowIndicator]->attachChild(std::move(arrowIndicator));
 		}
 	}
 
 	void World::playerDouble()
 	{
-		_currentBet *= 2;
-
 		_player->betMoney(_currentBet);
+
+		_currentBet *= 2;
 
 		hit(_hand);
 
@@ -356,6 +402,11 @@ namespace GEX {
 			{
 				_firstHandTurn = false;
 				_splitHandTurn = true;
+			}
+			else if (_splitHandTurn)
+			{
+				_splitHandTurn = false;
+				dealersTurn();
 			}
 		}
 		else
@@ -500,25 +551,6 @@ namespace GEX {
 				}
 			}
 		}
-		/*for (int i = 0; i <= _splitHands.size(); i++)
-		{
-			for (int j = 0; j < _allCards.size(); j++)
-			{
-				if (i % 2 != 0)
-				{
-					if (j % 2 != 0)
-					{
-						sf::Vector2f positionB = sf::Vector2f(100 + (j * 100), 500 - (i * 150));
-						_allCards[j]->setPosition(positionB);
-					}
-				}
-				if (j % 2 == 0)
-				{
-					sf::Vector2f positionB = sf::Vector2f(200 + (j * 100), 500);
-					_allCards[j]->setPosition(positionB);
-				}
-			}
-		}*/
 	}
 
 	void World::initialDrawDealerCard(Card & card)
@@ -667,41 +699,110 @@ namespace GEX {
 
 	void World::endRound()
 	{
-		if (isBlackJack(_hand))
+		for (int i = 0; i < _splitCards.size(); i++)
 		{
-			std::cout << "Blackjack";
-			_player->addMoney(_currentBet * 1.5 + _currentBet);
-			_winningsText->setText("You Won: " + std::to_string(_currentBet * 1.5 + _currentBet));
+			sf::Vector2f positionB = sf::Vector2f(200 + (i * 100), 350);
+			_splitCards[i]->setPosition(positionB);
 		}
-		else if (isBusted(_hand))
+		int winnings = 0;
+		if (_hasSplit)
 		{
-			std::cout << "Dealer won\n";
-			_winningsText->setText("Dealer Won");
+			if (isBlackJack(_splitHands[0]))
+			{
+				winnings += (_currentBet / 2) * 1.5 + (_currentBet / 2);
+			}
+			else if (isBusted(_splitHands[0]))
+			{
+				// do nothing
+			}
+			else if (isBusted(_dealerHand))
+			{
+				winnings += _currentBet;
+			}
+			else if (_splitHands[0]->getHandTotal() > _dealerHand->getHandTotal())
+			{
+				// player wins
+				winnings += _currentBet;
+			}
+			else if (_hand->getHandTotal() == _dealerHand->getHandTotal())
+			{
+				winnings += _currentBet / 2;
+			}
+
+			if (isBlackJack(_hand))
+			{
+				winnings += (_currentBet / 2) * 1.5 + (_currentBet / 2);
+			}
+			else if (isBusted(_hand))
+			{
+				// do nothing
+			}
+			else if (isBusted(_dealerHand))
+			{
+				winnings += _currentBet;
+			}
+			else if (_hand->getHandTotal() > _dealerHand->getHandTotal())
+			{
+				// player wins
+				winnings += _currentBet;
+			}
+			else if (_hand->getHandTotal() == _dealerHand->getHandTotal())
+			{
+				winnings += _currentBet / 2;
+			}
+
+			if (winnings > 0)
+			{
+				_winningsText->setText("You Won: " + std::to_string(winnings));
+				_player->addMoney(winnings);
+			}
+			else if (winnings == _currentBet / 2)
+			{
+				_winningsText->setText("You Pushed");
+			}
+			else
+			{
+				_winningsText->setText("Dealer Won");
+			}
 		}
-		else if (isBusted(_dealerHand))
+		else
 		{
-			std::cout << "Player won\n";
-			_player->addMoney(_currentBet * 2);
-			_winningsText->setText("You Won: " + std::to_string(_currentBet * 2));
-		}
-		else if (_dealerHand->getHandTotal() > _hand->getHandTotal() || isBlackJack(_dealerHand))
-		{
-			// dealer wins
-			std::cout << "Dealer won\n";
-			_winningsText->setText("Dealer Won");
-		}
-		else if (_hand->getHandTotal() > _dealerHand->getHandTotal())
-		{
-			// player wins
-			std::cout << "Player won\n";
-			_player->addMoney(_currentBet * 2);
-			_winningsText->setText("You Won: " + std::to_string(_currentBet * 2));
-		}
-		else if (_hand->getHandTotal() == _dealerHand->getHandTotal())
-		{
-			std::cout << "Push";
-			_player->addMoney(_currentBet);
-			_winningsText->setText("You Pushed");
+			if (isBlackJack(_hand))
+			{
+				std::cout << "Blackjack";
+				_player->addMoney(_currentBet * 1.5 + _currentBet);
+				_winningsText->setText("You Won: " + std::to_string(_currentBet * 1.5 + _currentBet));
+			}
+			else if (isBusted(_hand))
+			{
+				std::cout << "Dealer won\n";
+				_winningsText->setText("Dealer Won");
+			}
+			else if (isBusted(_dealerHand))
+			{
+				std::cout << "Player won\n";
+				_player->addMoney(_currentBet * 2);
+				_winningsText->setText("You Won: " + std::to_string(_currentBet * 2));
+			}
+			else if (_dealerHand->getHandTotal() > _hand->getHandTotal() || isBlackJack(_dealerHand))
+			{
+				// dealer wins
+				std::cout << "Dealer won\n";
+				_winningsText->setText("Dealer Won");
+			}
+			else if (_hand->getHandTotal() > _dealerHand->getHandTotal())
+			{
+				// player wins
+				std::cout << "Player won\n";
+				_player->addMoney(_currentBet * 2);
+				_winningsText->setText("You Won: " + std::to_string(_currentBet * 2));
+			}
+			else if (_hand->getHandTotal() == _dealerHand->getHandTotal())
+			{
+				std::cout << "Push";
+				_player->addMoney(_currentBet);
+				_winningsText->setText("You Pushed");
+			}
 		}
 		_currentBet = 0;
 		_isPlayersTurn = true;
@@ -712,6 +813,8 @@ namespace GEX {
 		_roundInProgress = false;
 		_hasSplit = false;
 		_splitHands.clear();
+		_splitHandTurn = false;
+		_firstHandTurn = false;
 	}
 
 	void World::clearAllCards()
@@ -746,6 +849,7 @@ namespace GEX {
 		_textures.load(GEX::TextureID::DealButton, "Media/Textures/deal.png");
 		_textures.load(GEX::TextureID::ClearBetButton, "Media/Textures/clearBet.png");
 		_textures.load(GEX::TextureID::CardBack, "Media/Textures/card_back.png");
+		_textures.load(GEX::TextureID::ArrowIndicator, "Media/Textures/splitHandIndicator.png");
 		
 	}
 
@@ -775,15 +879,22 @@ namespace GEX {
 		_splitHandTotalText = splitHandTotalTxt.get();
 		_sceneLayers[UpperField]->attachChild((std::move(splitHandTotalTxt)));
 
-		std::unique_ptr<TextNode> dealerHandTotalTxt(new TextNode(""));
-		dealerHandTotalTxt->setText("Dealer Hand: " + std::to_string(_dealerHand->getHandTotal()));
-		dealerHandTotalTxt->setPosition(50, 770);
-		dealerHandTotalTxt->setSize(50);
-		_dealerHandTotal = dealerHandTotalTxt.get();
-		_sceneLayers[UpperField]->attachChild((std::move(dealerHandTotalTxt)));
+		//std::unique_ptr<TextNode> dealerHandTotalTxt(new TextNode(""));
+		//dealerHandTotalTxt->setText("Dealer Hand: " + std::to_string(_dealerHand->getHandTotal()));
+		//dealerHandTotalTxt->setPosition(50, 770);
+		//dealerHandTotalTxt->setSize(50);
+		//_dealerHandTotal = dealerHandTotalTxt.get();
+		//_sceneLayers[UpperField]->attachChild((std::move(dealerHandTotalTxt)));
+
+		std::unique_ptr<TextNode> whichHandTxt(new TextNode(""));
+		whichHandTxt->setText("");
+		whichHandTxt->setPosition(300, 770);
+		whichHandTxt->setSize(50);
+		_whichHandText = whichHandTxt.get();
+		_sceneLayers[UpperField]->attachChild((std::move(whichHandTxt)));
 
 		std::unique_ptr<TextNode> winningsTxt(new TextNode(""));
-		winningsTxt->setPosition(300, 770);
+		winningsTxt->setPosition(50, 770);
 		winningsTxt->setSize(50);
 		_winningsText = winningsTxt.get();
 		_sceneLayers[UpperField]->attachChild(std::move(winningsTxt));
