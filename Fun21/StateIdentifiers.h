@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: StateIdentifiers.h
 *@description: A class containing the IDs of States
 */

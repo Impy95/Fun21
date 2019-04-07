@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: StateStack.cpp
 *@description: A container for current states
 */

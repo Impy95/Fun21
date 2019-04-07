@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: SoundPlayer.h
 *@description: A class which plays sound
 */

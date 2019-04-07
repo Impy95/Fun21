@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: CommandQueue.h
 *@description: Queue of commands that can push and pop
 */

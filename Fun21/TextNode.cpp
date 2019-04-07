@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: TextNode.cpp
 *@description: A node for text entities
 */

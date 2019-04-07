@@ -41,6 +41,7 @@ namespace GEX
 		return false;
 	}
 
+	// Returns the value of the card
 	int Card::getCardValue()
 	{
 		switch (_face)

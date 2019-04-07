@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: SoundsNode.h
 *@description: A class which contains sounds and its location
 */

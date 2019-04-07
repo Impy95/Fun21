@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: TextureManager.cpp
 *@description: A manager for texture resources
 */

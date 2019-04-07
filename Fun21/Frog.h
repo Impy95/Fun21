@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen  & Vaughn Rowse
+*@author: Vaughn Rowse
 *@file: Frog.h
 *@description: The entity which is controlled by the player
 */

@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: FontManager.cpp
 *@description: Holds the fonts used in game
 */

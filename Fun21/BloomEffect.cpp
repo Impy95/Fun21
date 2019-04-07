@@ -1,5 +1,5 @@
 /**
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: BloomEffect.h
 *@description: A Bloom effect display for the game
 */

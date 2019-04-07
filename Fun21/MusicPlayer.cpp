@@ -3,10 +3,10 @@
 GEX::MusicPlayer::MusicPlayer()
 	:_music(),
 	_filenames(),
-	_volume(5)
+	_volume(20)
 {
 	_filenames[MusicID::MenuTheme] = "Media/Music/MenuTheme.ogg";
-	_filenames[MusicID::GameTheme] = "Media/Music/MissionTheme.ogg";
+	_filenames[MusicID::GameTheme] = "Media/Music/MainGameTheme.ogg";
 }
 
 void GEX::MusicPlayer::play(MusicID theme)

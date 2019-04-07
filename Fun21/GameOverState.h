@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: GameOverState.cpp
 *@description: State when the game ends
 */

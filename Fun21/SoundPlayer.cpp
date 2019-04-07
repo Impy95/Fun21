@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen 
+*@author: Vaughn Rowse
 *@file: SoundPlayer.cpp
 *@description: A class which plays sound
 */
@@ -15,10 +15,8 @@ GEX::SoundPlayer::SoundPlayer()
 	: _soundsBuffers()
 	, _sounds()
 {
-
-	loadBuffer(SoundEffectID::FroggerMove, "Media/Sound/froggerMove.wav");
-	loadBuffer(SoundEffectID::FroggerDie, "Media/Sound/froggerDie.wav");
-	loadBuffer(SoundEffectID::Jump, "Media/Sound/Jump.wav");
+	loadBuffer(SoundEffectID::ButtonClick, "Media/Sound/buttonClick.wav");
+	loadBuffer(SoundEffectID::DealCard, "Media/Sound/dealCard.wav");
 
 	// Listener points towards the screen (default in SFML)
 	sf::Listener::setDirection(0.f, 0.f, -1.f);
@@ -26,7 +24,7 @@ GEX::SoundPlayer::SoundPlayer()
 
 void GEX::SoundPlayer::play(SoundEffectID effect)
 {
-	//play(effect, getListenerPosition());
+	play(effect, getListenerPosition());
 
 }
 

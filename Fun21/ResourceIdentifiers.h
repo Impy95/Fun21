@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: ResourceIdentifiers.h
 *@description: Holds IDs of resources
 */
@@ -39,5 +39,7 @@ namespace GEX {
 		FroggerMove,
 		FroggerDie,
 		Jump,
+		ButtonClick,
+		DealCard,
 	};
 }

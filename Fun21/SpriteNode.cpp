@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: SpriteNode.h
 *@description: Scenenode for sprites
 */

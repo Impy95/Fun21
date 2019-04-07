@@ -62,6 +62,8 @@ namespace GEX
 
 		return total;
 	}
+
+	// Splits the current hand into 2
 	void Hand::splitHand(Hand& originalHand, Hand& splitHand)
 	{
 		Card& splitCard = originalHand.getCard(1);

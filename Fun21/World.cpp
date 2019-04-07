@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen & Vaughn Rowse
+*@author: Vaughn Rowse
 *@file: World.cpp
 *@description: A controller to handle collisions and events
 */
@@ -124,51 +124,85 @@ namespace GEX {
 				//	deal();
 				//}
 
+				// If the player is currently betting
+				// Only these buttons are available to click
 				if (_isBetting)
 				{
-					if (_bet5ButtonBoundingBox.contains(mouse)) {
+					if (_bet5ButtonBoundingBox.contains(mouse)) 
+					{
+						_sounds.play(SoundEffectID::ButtonClick);
 						bet(5);
 					}
-					else if (_bet25ButtonBoundingBox.contains(mouse)) {
+					else if (_bet25ButtonBoundingBox.contains(mouse)) 
+					{
+						_sounds.play(SoundEffectID::ButtonClick);
 						bet(25);
 					}
-					else if (_betMaxButtonBoundingBox.contains(mouse)) {
+					else if (_betMaxButtonBoundingBox.contains(mouse)) 
+					{
+						_sounds.play(SoundEffectID::ButtonClick);
 						bet(MAXBET);
 					}
-					else if (_dealButtonBoundingBox.contains(mouse)) {
+					else if (_dealButtonBoundingBox.contains(mouse)) 
+					{
+						_sounds.play(SoundEffectID::ButtonClick);
 						deal();
 					}
-					else if (_clearBetButtonBoundingBox.contains(mouse)) {
+					else if (_clearBetButtonBoundingBox.contains(mouse)) 
+					{
+						_sounds.play(SoundEffectID::ButtonClick);
 						clearBet();
 					}
 				}
+				// Else the bet buttons are not available
+				// Everything else is
 				else
 				{
+					// If they player has split their hand
+					// Hit and Stay have different interactions depending on which hand they are playing
+					// Also double is not available after splitting
 					if (_hasSplit)
 					{
 						if (_hitButtonBoundingBox.contains(mouse) && _firstHandTurn)
 						{
+							_sounds.play(SoundEffectID::ButtonClick);
 							hit(_hand);
 						}
 						else if (_hitButtonBoundingBox.contains(mouse) && _splitHandTurn)
+						{
+							_sounds.play(SoundEffectID::ButtonClick);
 							hit(_splitHands[0]);
+						}
 						else if (_stayButtonBoundingBox.contains(mouse) && _firstHandTurn)
+						{
+							_sounds.play(SoundEffectID::ButtonClick);
 							stay();
+						}
 						else if (_stayButtonBoundingBox.contains(mouse) && _splitHandTurn)
+						{
+							_sounds.play(SoundEffectID::ButtonClick);
 							stay();
+						}
 					}
+					// Else every other buttons interaction
 					else if (_hitButtonBoundingBox.contains(mouse))
+					{
+						_sounds.play(SoundEffectID::ButtonClick);
 						hit(_hand);
+					}
 					else if (_stayButtonBoundingBox.contains(mouse))
 					{
+						_sounds.play(SoundEffectID::ButtonClick);
 						stay();
 					}
 					else if (_doubleButtonBoundingBox.contains(mouse))
 					{
+						_sounds.play(SoundEffectID::ButtonClick);
 						playerDouble();
 					}
 					else if (_splitButtonBoundingBox.contains(mouse))
 					{
+						_sounds.play(SoundEffectID::ButtonClick);
 						split();
 					}
 				}
@@ -279,6 +313,7 @@ namespace GEX {
 
 	void World::hit(Hand* hand)
 	{
+		_sounds.play(SoundEffectID::DealCard);
 		if (hand->getHandTotal() < 21)
 		{
 			_deck->shuffle();
@@ -305,8 +340,12 @@ namespace GEX {
 
 	void World::deal()
 	{
+		
 		if (_currentBet > 0)
 		{
+			// Play sound effect
+			_sounds.play(SoundEffectID::DealCard);
+
 			// Hide winning text
 			_winningsText->setText("");
 
@@ -363,17 +402,23 @@ namespace GEX {
 	{
 		if (_hand->getCard(0).getFace() == _hand->getCard(1).getFace())
 		{
+			// Clear clocks
+			_clocks.clear();
+			// Double bet for extra hand
 			_player->betMoney(_currentBet);
 			_currentBet *= 2;
+			// Create a new hand and add it to the splitHands vector
 			Hand* splitHand = new Hand();
 			_splitHands.push_back(splitHand);
 			_hand->splitHand(*_hand, *_splitHands[0]);
+			// Add the card to the split cards vector and remove it from all cards
 			_splitCards.push_back(_allCards[1]);
 			_allCards.pop_back();
 			_hasSplit = true;
 			 
 			// 200, 500
 			// 200, 350
+			// Create an arrow indicator for the split hands
 			sf::Texture& arrowIndicatorTexture = _textures.get(TextureID::ArrowIndicator);
 			std::unique_ptr<SpriteNode> arrowIndicator(new SpriteNode(arrowIndicatorTexture));
 			arrowIndicator->setPosition(150, 500);
@@ -385,6 +430,9 @@ namespace GEX {
 
 	void World::playerDouble()
 	{
+		// Double the bet
+		// Deal 1 more card
+		// Move to dealers turn
 		_player->betMoney(_currentBet);
 
 		_currentBet *= 2;
@@ -396,6 +444,9 @@ namespace GEX {
 
 	void World::stay()
 	{
+		// If player has split
+		// Check if its their first hand, if so move to second hand
+		// If second hand, move to dealers turn
 		if (_hasSplit)
 		{
 			if (_firstHandTurn)
@@ -420,9 +471,13 @@ namespace GEX {
 
 	void World::bet(int amount)
 	{
-		_roundInProgress = true;
+		// Begin a new round (bet button will be the first thing clicked
+		_roundInProgress = true;	
+		// Don't enter if the player is already at max bet
 		if (_currentBet < 200)
 		{
+			// if player does not have enough money for the current bet
+			// set the bet to their remaning money
 			if (_player->getTotalMoney() - amount < 0)
 				amount = _player->getTotalMoney();
 
@@ -443,15 +498,18 @@ namespace GEX {
 		}
 	}
 
+	// Clear all bets
 	void World::clearBet()
 	{
 		_player->addMoney(_currentBet);
 		_currentBet = 0;
 	}
 
-
+	// Draws the cards for the players
 	void World::initalDrawPlayerCard(Card & card)
 	{
+		// If its the split hands turn
+		// Cards are drawn in a position above the first hand
 		if (_splitHandTurn)
 		{
 			std::unique_ptr<Card> cardDraw(new Card(_textures, card.getFace(), card.getSuit(), card.getType()));
@@ -460,6 +518,7 @@ namespace GEX {
 			_splitCards.push_back(cardDraw.get());
 			_sceneLayers[Cards]->attachChild(std::move(cardDraw));
 		}
+		// Else draw cards in normal positions
 		else
 		{
 			std::unique_ptr<Card> cardDraw(new Card(_textures, card.getFace(), card.getSuit(), card.getType()));
@@ -470,6 +529,8 @@ namespace GEX {
 		}
 	}
 
+	// Draws the players cards every frame acting as the animation from the main deck
+	// To the players hand
 	void World::drawPlayerCard(sf::Time dt)
 	{
 		float factor = 0.f, speed = .4f;
@@ -495,15 +556,10 @@ namespace GEX {
 				_allCards[i]->setPosition(interpolate(positionA, positionB, factor));
 			}
 		}
-
-		
-		//timeSinceLastUpdate += _clock.restart();
-		//factor += timeSinceLastUpdate.asSeconds() * speed;
-
-		//_allCards[0]->setPosition(interpolate(positionA, positionB, factor));
-
 	}
 
+	// Draws the split hands
+	// Differs from drawPlayerCards because it has to draw both hands 
 	void World::drawSplitHands()
 	{
 		float factor = 0.f, speed = .4f;
@@ -553,6 +609,8 @@ namespace GEX {
 		}
 	}
 
+	// Initial draw of the dealers cards
+	// First card is face down if its the players turn
 	void World::initialDrawDealerCard(Card & card)
 	{
 		if (!_isPlayersTurn)
@@ -575,6 +633,7 @@ namespace GEX {
 				_dealerCards.push_back(dealerCard.get());
 				_dealersFirstCard = std::move(dealerCard);
 
+				// Draws a card back for the first card to show the card is face down
 				sf::Texture& cardBackTexture = _textures.get(TextureID::CardBack);
 				std::unique_ptr<SpriteNode> cardBack(new SpriteNode(cardBackTexture));
 				cardBack->setPosition(850, 50);
@@ -585,6 +644,7 @@ namespace GEX {
 			}
 			else
 			{
+				// Second card draws as normal
 				std::unique_ptr<Card> dealerCard(new Card(_textures, _dealerHand->getCard(1).getFace()
 					, _dealerHand->getCard(1).getSuit(), _dealerHand->getCard(1).getType()));
 				dealerCard->setPosition(850, 50);
@@ -595,6 +655,8 @@ namespace GEX {
 		}
 	}
 
+	// Constant update of dealers cards
+	// To replicate an animation
 	void World::drawDealerCard(sf::Time dt)
 	{
 		float factor = 0.f, speed = .4f;
@@ -642,6 +704,9 @@ namespace GEX {
 		}
 	}
 
+	// Same as the other draw cards 
+	// Except it is just for the dealers card back
+	// So no for loop and positionB is static
 	void World::moveCardBack(sf::Time dt)
 	{
 		float factor = 0.f, speed = .4f;
@@ -662,14 +727,20 @@ namespace GEX {
 		}
 	}
 
+	// The dealers turn
 	void World::dealersTurn()
 	{
+		// Set bools correctly so the game doesn't continuously loop
 		_isPlayersTurn = false;
 		_dealing = false;
 		bool finishedHitting = false;
 
+		// Removes the card back and adds the face down card, face up
 		_sceneLayers[CardBack]->removeAllChildren();
 		_sceneLayers[DealerCards]->attachChild(std::move(_dealersFirstCard));
+		// Logic for when the dealer hits
+		// If hand total is less than 17 or a soft 17 (contains an ace), he hits
+		// If hand total is greater than 17 or soft 17, he stays
 		while (!finishedHitting)
 		{
 			if (_dealerHand->getHandTotal() < 17 || (_dealerHand->getHandTotal() < 18 && handHasAce(_dealerHand)))
@@ -685,6 +756,7 @@ namespace GEX {
 		}
 	}
 
+	// Checks if a hand has an ace in it
 	bool World::handHasAce(Hand * hand)
 	{
 		for (int i = 0; i < hand->handSize(); i++)
@@ -697,14 +769,19 @@ namespace GEX {
 		}
 	}
 
+	// Ends the current round
 	void World::endRound()
 	{
+		// Draws the split cards to their correct positions so they don't get stuck
 		for (int i = 0; i < _splitCards.size(); i++)
 		{
 			sf::Vector2f positionB = sf::Vector2f(200 + (i * 100), 350);
 			_splitCards[i]->setPosition(positionB);
 		}
 		int winnings = 0;
+		// If the hand is split
+		// Go through every winning / losing option and set the winning variable correctly
+		// Get the winnings and update the texts based off who won
 		if (_hasSplit)
 		{
 			if (isBlackJack(_splitHands[0]))
@@ -765,6 +842,7 @@ namespace GEX {
 				_winningsText->setText("Dealer Won");
 			}
 		}
+		// Else just check for the single hand vs the dealers hand
 		else
 		{
 			if (isBlackJack(_hand))
@@ -804,6 +882,7 @@ namespace GEX {
 				_winningsText->setText("You Pushed");
 			}
 		}
+		// Reset all variables for the new round
 		_currentBet = 0;
 		_isPlayersTurn = true;
 		_isBetting = true;
@@ -823,6 +902,7 @@ namespace GEX {
 		_sceneLayers[Cards]->removeAllChildren();
 	}
 
+	// Moves the cards to their correct position based off the factor given
 	sf::Vector2f World::interpolate(const sf::Vector2f & pointA, const sf::Vector2f & pointB, float factor)
 	{
 		if (factor > 1.f)
@@ -872,6 +952,7 @@ namespace GEX {
 		_handTotal = handTotalTxt.get();
 		_sceneLayers[UpperField]->attachChild((std::move(handTotalTxt)));
 
+		// Connects Split Hand Total display system
 		std::unique_ptr<TextNode> splitHandTotalTxt(new TextNode(""));
 		splitHandTotalTxt->setText("");
 		splitHandTotalTxt->setPosition(50, 720);
@@ -879,6 +960,7 @@ namespace GEX {
 		_splitHandTotalText = splitHandTotalTxt.get();
 		_sceneLayers[UpperField]->attachChild((std::move(splitHandTotalTxt)));
 
+		// For testing purpose, shows dealers hand total
 		//std::unique_ptr<TextNode> dealerHandTotalTxt(new TextNode(""));
 		//dealerHandTotalTxt->setText("Dealer Hand: " + std::to_string(_dealerHand->getHandTotal()));
 		//dealerHandTotalTxt->setPosition(50, 770);
@@ -886,6 +968,7 @@ namespace GEX {
 		//_dealerHandTotal = dealerHandTotalTxt.get();
 		//_sceneLayers[UpperField]->attachChild((std::move(dealerHandTotalTxt)));
 
+		// Connects Which Hand display system
 		std::unique_ptr<TextNode> whichHandTxt(new TextNode(""));
 		whichHandTxt->setText("");
 		whichHandTxt->setPosition(300, 770);
@@ -893,6 +976,7 @@ namespace GEX {
 		_whichHandText = whichHandTxt.get();
 		_sceneLayers[UpperField]->attachChild((std::move(whichHandTxt)));
 
+		// Connects Winning Text display system
 		std::unique_ptr<TextNode> winningsTxt(new TextNode(""));
 		winningsTxt->setPosition(50, 770);
 		winningsTxt->setSize(50);
@@ -1015,6 +1099,7 @@ namespace GEX {
 		_clearBetButtonBoundingBox = clearBetButton->getBoundingBox();
 		_sceneLayers[Background]->attachChild(std::move(clearBetButton));
 	}
+
 	//checks collision categories pairs
 	bool matchesCategories(SceneNode::Pair& colliders, Category::Type type1, Category::Type type2)
 	{

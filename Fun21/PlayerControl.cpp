@@ -1,42 +1,13 @@
 /*
-*@author: Greg VanKampen  & Vaughn Rowse
+*@author: Vaughn Rowse  & Vaughn Rowse
 *@file: PlayerControl.h
 *@description: A class to handle player inputs
 */
 #include "PlayerControl.h"
-#include "Frog.h"
 #include "Command.h"
 #include "CommandQueue.h"
 #include "Category.h"
 namespace GEX {
-	struct FrogMover {
-	public:
-		FrogMover(float x, float y) : positionOffset(x,y){}
-
-		//updates player position based on key presses
-		void operator() (Frog& frog, sf::Time) const {
-			//dont update movement when dead
-			if (!frog.isDead()){
-				if (positionOffset.y < 0 && positionOffset.x == 0) {
-					frog.addMovementTotal(1);
-						frog.setDirection(Frog::State::Up);
-				}
-				else if (positionOffset.y > 0 && positionOffset.x == 0) {
-					frog.addMovementTotal(-1);
-						frog.setDirection(Frog::State::Down);
-				}
-				else if (positionOffset.x < 0 && positionOffset.y == 0) {
-					frog.setDirection(Frog::State::Left);
-				}
-				else if (positionOffset.x > 0 && positionOffset.y == 0) {
-					;
-					frog.setDirection(Frog::State::Right);
-				}
-			frog.updateLocaton(positionOffset);
-		}
-		}
-		sf::Vector2f positionOffset;
-	};
 	PlayerControl::PlayerControl()
 		:_currentMissionStatus(MissionStatus::MissionRunning)
 	{
@@ -96,10 +67,6 @@ namespace GEX {
 		
 		const float PLAYER_MOVEMENT_H = 40;
 		const float PLAYER_MOVEMENT_V = 40;
-		_actionBindings[Action::MoveLeft].action = derivedAction<Frog>(FrogMover(-PLAYER_MOVEMENT_H,0.f));
-		_actionBindings[Action::MoveRight].action = derivedAction<Frog>(FrogMover(PLAYER_MOVEMENT_H,0.f));
-		_actionBindings[Action::MoveUp].action = derivedAction<Frog>(FrogMover(0.f,-PLAYER_MOVEMENT_V));
-		_actionBindings[Action::MoveDown].action = derivedAction<Frog>(FrogMover(0.f, PLAYER_MOVEMENT_V));
 	 }
 }
 

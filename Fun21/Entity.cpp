@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: Entity.cpp
 *@description: Entity class that defines the base of what an entity is
 */

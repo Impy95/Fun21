@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen 
+*@author: Vaughn Rowse 
 *@file: Command.h
 *@description: Commands objects that are loaded into a queue
 */

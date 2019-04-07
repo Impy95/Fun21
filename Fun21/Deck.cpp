@@ -26,11 +26,13 @@ namespace GEX
 		_topOfDeck = _deck.size() - 1;
 	}
 
+	// Checks if the deck is empty (never should be)
 	bool Deck::isEmpty() const
 	{
 		return (_topOfDeck == _deck.size());
 	}
 
+	// Draws a card from the deck
 	Card& Deck::drawCard()
 	{
 		if (isEmpty())
@@ -43,11 +45,13 @@ namespace GEX
 			return *_deck[_topOfDeck++];
 	}
 
+	// Shuffles the deck
 	void Deck::shuffle()
 	{
 		std::random_shuffle(_deck.begin(), _deck.end());
 	}
 
+	// Gets the size of the deck
 	int Deck::getDeckSize()
 	{
 		return _deck.size();

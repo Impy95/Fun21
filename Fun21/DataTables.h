@@ -1,5 +1,5 @@
 /**
-*@author: Greg VanKampen & Vaugn Rowse
+*@author: Vaughn Rowse
 *@file: Datatable.cpp
 *@description: Storage of attributes for entities
 */

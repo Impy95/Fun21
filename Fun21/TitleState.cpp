@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: TitleState.cpp
 *@description: State shown on game start up
 */

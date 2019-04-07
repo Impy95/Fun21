@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen
+*@author: Vaughn Rowse
 *@file: PauseState.cpp
 *@description: The state of the application when the pause menu is active
 */

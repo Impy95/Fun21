@@ -1,5 +1,5 @@
 /*
-*@author: Greg VanKampen & Vaughn Rowse
+*@author: Vaughn Rowse
 *@file: World.h
 *@description: A controller to handle collisions and events
 */
