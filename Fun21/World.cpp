@@ -400,10 +400,10 @@ namespace GEX {
 
 	void World::split()
 	{
-		if (_hand->getCard(0).getFace() == _hand->getCard(1).getFace())
-		{
+		//if (_hand->getCard(0).getFace() == _hand->getCard(1).getFace())
+		//{
 			// Clear clocks
-			_clocks.clear();
+			//_clocks.clear();
 			// Double bet for extra hand
 			_player->betMoney(_currentBet);
 			_currentBet *= 2;
@@ -425,7 +425,7 @@ namespace GEX {
 			arrowIndicator->scale(0.05, 0.05);
 			_splitHandIndicator = arrowIndicator.get();
 			_sceneLayers[ArrowIndicator]->attachChild(std::move(arrowIndicator));
-		}
+		//}
 	}
 
 	void World::playerDouble()
